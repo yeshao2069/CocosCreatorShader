@@ -1,0 +1,45 @@
+{
+  "__type__": "cc.Material",
+  "_name": "",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "8b357070-cfee-46dd-91eb-313a11dcc663"
+  },
+  "_techIdx": 0,
+  "_defines": [
+    {
+      "USE_FINALCOLOR": true
+    },
+    {},
+    {}
+  ],
+  "_states": [
+    {
+      "rasterizerState": {},
+      "depthStencilState": {},
+      "blendState": {
+        "targets": [
+          {}
+        ]
+      }
+    },
+    {},
+    {}
+  ],
+  "_props": [
+    {
+      "roughness": 0.272166,
+      "metallic": 0.4,
+      "finalColor": {
+        "__type__": "cc.Vec4",
+        "x": 0.5,
+        "y": 1,
+        "z": 1,
+        "w": 1
+      }
+    },
+    {},
+    {}
+  ]
+}
