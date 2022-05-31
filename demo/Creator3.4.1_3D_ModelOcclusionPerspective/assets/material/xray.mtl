@@ -1,0 +1,120 @@
+{
+  "__type__": "cc.Material",
+  "_name": "",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "850ad4b2-4cff-4794-882d-a5099041561f"
+  },
+  "_techIdx": 0,
+  "_defines": [
+    {},
+    {
+      "USE_BASE_COLOR_MAP": true,
+      "BASE_COLOR_MAP_AS_SHADE_MAP_1": true,
+      "BASE_COLOR_MAP_AS_SHADE_MAP_2": true
+    },
+    {
+      "USE_BASE_COLOR_MAP": true,
+      "BASE_COLOR_MAP_AS_SHADE_MAP_1": true,
+      "BASE_COLOR_MAP_AS_SHADE_MAP_2": true
+    },
+    {},
+    {}
+  ],
+  "_states": [
+    {
+      "rasterizerState": {},
+      "depthStencilState": {},
+      "blendState": {
+        "targets": [
+          {}
+        ]
+      }
+    },
+    {
+      "rasterizerState": {},
+      "depthStencilState": {},
+      "blendState": {
+        "targets": [
+          {}
+        ]
+      }
+    },
+    {
+      "rasterizerState": {},
+      "depthStencilState": {},
+      "blendState": {
+        "targets": [
+          {}
+        ]
+      }
+    },
+    {},
+    {}
+  ],
+  "_props": [
+    {},
+    {
+      "mainColor": {
+        "__type__": "cc.Color",
+        "r": 41,
+        "g": 255,
+        "b": 0,
+        "a": 255
+      },
+      "shadeColor1": {
+        "__type__": "cc.Color",
+        "r": 0,
+        "g": 253,
+        "b": 0,
+        "a": 255
+      },
+      "shadeColor2": {
+        "__type__": "cc.Color",
+        "r": 62,
+        "g": 255,
+        "b": 2,
+        "a": 255
+      },
+      "specular": {
+        "__type__": "cc.Color",
+        "r": 10,
+        "g": 255,
+        "b": 0,
+        "a": 76
+      },
+      "mainTexture": {
+        "__uuid__": "6f891a7b-5a08-48e6-9841-ddb364ac86b1@6c48a"
+      }
+    },
+    {
+      "mainColor": {
+        "__type__": "cc.Color",
+        "r": 255,
+        "g": 255,
+        "b": 255,
+        "a": 255
+      },
+      "shadeColor1": {
+        "__type__": "cc.Color",
+        "r": 255,
+        "g": 255,
+        "b": 255,
+        "a": 255
+      },
+      "shadeColor2": {
+        "__type__": "cc.Color",
+        "r": 80,
+        "g": 79,
+        "b": 79,
+        "a": 255
+      },
+      "mainTexture": {
+        "__uuid__": "6f891a7b-5a08-48e6-9841-ddb364ac86b1@6c48a"
+      }
+    },
+    {},
+    {}
+  ]
+}
