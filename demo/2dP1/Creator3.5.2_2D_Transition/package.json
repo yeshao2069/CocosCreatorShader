@@ -1,0 +1,11 @@
+{
+  "creator": {
+    "version": "3.5.2"
+  },
+  "dependencies": {
+    "crypto": "^1.0.1"
+  },
+  "name": "transition340",
+  "uuid": "d2d99a3f-81cc-47d0-9dfa-8dcb98b7f39c",
+  "version": "3.5.2"
+}

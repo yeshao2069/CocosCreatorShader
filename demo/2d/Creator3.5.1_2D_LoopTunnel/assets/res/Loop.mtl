@@ -1,0 +1,29 @@
+{
+  "__type__": "cc.Material",
+  "_name": "Loop",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "351083ec-7ad9-4037-a7d9-4708e4a6706a"
+  },
+  "_techIdx": 0,
+  "_defines": [
+    {}
+  ],
+  "_states": [],
+  "_props": [
+    {
+      "angle": 0,
+      "scale": 1.6,
+      "R": 0.4,
+      "C": {
+        "__type__": "cc.Vec2",
+        "x": 1,
+        "y": 0
+      },
+      "N": 4,
+      "Rm": 0.6
+    }
+  ],
+  "_techniqueIndex": 0
+}

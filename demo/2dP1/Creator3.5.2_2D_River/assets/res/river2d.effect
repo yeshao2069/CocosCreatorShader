@@ -1,0 +1,118 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        mainTex: { value: white }
+        mainTex2: {  value: white }
+        alphaThreshold: { value: 0.5 }
+}%
+
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <cc-global>
+  #if USE_LOCAL
+    #include <cc-local>
+  #endif
+
+  in vec3 a_position;
+  in vec4 a_color;
+  in vec2 a_texCoord;
+
+  out vec4 v_color;
+  out vec2 v_uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    v_uv0 = a_texCoord;
+    v_color = a_color;
+
+    return pos;
+  }
+}%
+
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <embedded-alpha>
+  #include <alpha-test>
+  #include <cc-global>
+
+  in vec4 v_color;
+  in vec2 v_uv0;
+
+  uniform sampler2D mainTex;
+  uniform sampler2D mainTex2;
+
+  float random (vec2 st) {
+    return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
+  }
+
+  vec4 frag () {
+    vec3 color = vec3(0.);
+    // 弄个t接收cc_time.x, *= 0.6是因为正常速太快，变慢点
+    float t = cc_time.x * 0.6;
+
+    // v_uv0 + t * vec2(.5,.1) 这里的t是上面的时间，会持续增大的一个数值
+    // vec2(.5,.1) 是我随便写的一个方向向量，方向*时间 作为uv的偏移
+    // 噪声图设置 WrapMode = Repeat 否则偏移值超过vec2(1.,1.)之后就取不到值了，要改成repeat才可以取值
+    vec2 off1 = texture(mainTex2, v_uv0 + t * vec2(.5,.1)).xy;
+    // 偏移值缩放0.1倍，不然波纹太过分了
+    off1 *= .005;
+
+    color += texture(mainTex, off1 + v_uv0).xyz;
+
+    // 参数0-1是正好 从黑到白的，用-.5->1.3这个范围，色值就是不太黑到不太白，免得颜色太极端
+    color *= smoothstep(-.5 ,1.3, v_uv0.y) - .3;
+
+    // 白沫的uv 所以取名mouv!
+    vec2 mouv = v_uv0;
+    // 做y轴分行，原理见彩虹那篇帖子
+    mouv.y *= 20.;
+    // n3就是行id 取名无力
+    float n3 = floor(mouv.y);
+    // n4就是用行id随机一个对应的随机值出来，每行一个随机值作为行的运动速度
+    // 所以对于y轴在同一行（注意上面*=20，所以共20行），我们这里计算出一个改行的运动速度，放在这备用
+    float n4 = random(vec2(n3, n3)) + .3;
+
+    // baseuv做变换对噪声图取值
+    vec2 baseuv = v_uv0;
+    // 让噪声图x轴重复四次，y轴重复三次
+    vec2 scale = vec2(4., 3.);
+    baseuv = baseuv * scale;
+
+    // 取值用的uv加上向左的移动 t是上面用过的那个cc_time.x哈，*0.1不然太快了
+    // n4是上面计算好的速度哈
+    baseuv.x += t * .1 * n4;
+    
+    float c1 = texture(mainTex2, baseuv).x;
+    c1 = smoothstep(0.23, 0., c1);
+    color += vec3(c1);
+    
+    return vec4(color, 1.);
+  }
+}%

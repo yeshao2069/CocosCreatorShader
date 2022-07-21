@@ -1,0 +1,13 @@
+{
+  "ver": "4.0.23",
+  "importer": "typescript",
+  "imported": true,
+  "uuid": "a8f44eb5-07c7-4a85-80df-e08d32c6c6cc",
+  "files": [],
+  "subMetas": {},
+  "userData": {
+    "moduleId": "project:///assets/script/lowPolyWater.js",
+    "importerSettings": 0,
+    "simulateGlobals": []
+  }
+}

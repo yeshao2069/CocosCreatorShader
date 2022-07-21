@@ -1,0 +1,68 @@
+// Effect Syntax Guide: https://github.com/cocos-creator/docs-3d/blob/master/zh/material-system/effect-syntax.md
+
+CCEffect %{
+  techniques:
+  - name: opaque
+    passes:
+    - vert: general-vs:vert # builtin header
+      frag: unlit-fs:frag
+      properties: &props
+        mainTexture:    { value: white }
+        detailTexture:    { value: black }
+        strenghten: { value: 0.05, target: params.x }
+        speed: { value: [0.05,0.05], target: params.yz }
+        detailColorFactor: { value: 1.0, target: params.w }
+
+        mainColor:      { value: [1, 1, 1, 1], editor: { type: color } }
+  - name: transparent
+    passes:
+    - vert: general-vs:vert # builtin header
+      frag: unlit-fs:frag
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendSrcAlpha: src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      properties: *props
+}%
+
+CCProgram unlit-fs %{
+  precision highp float;
+  #include <output>
+  #include <cc-fog-fs>
+
+  in vec2 v_uv;
+  in vec3 v_position;
+
+  uniform sampler2D mainTexture;
+  uniform sampler2D detailTexture;
+
+  uniform Constant {
+    vec4 mainColor;
+    vec4 params;
+  };
+
+  vec4 frag () {
+    float strenghten = params.x;
+    vec2 speed = params.yz;
+    float detailColorFactor = params.w;
+
+    vec2 animUV = v_uv + cc_time.xx * speed;
+
+
+    vec4 detailColor = texture(detailTexture,animUV);
+
+    float gray = detailColor.r * 0.299 + detailColor.g * 0.587 + detailColor.b * 0.114;
+    
+    vec2 offset = (detailColor.rg - 0.5) * 2.0 * strenghten * gray;
+
+    vec4 color = mainColor * texture(mainTexture, v_uv + offset);
+    
+    color.rgb += detailColor.rgb * detailColorFactor;
+
+    CC_APPLY_FOG(color, v_position);
+    return CCFragOutput(color);
+  }
+}%
