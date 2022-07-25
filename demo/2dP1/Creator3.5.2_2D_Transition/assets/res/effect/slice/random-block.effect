@@ -89,10 +89,6 @@ CCProgram sprite-fs %{
       vec2 newUV = floor(uv0 * vec2(radio,1) * width) / width;
       float f = CCSampleWithAlphaSeparated(cc_spriteTexture,newUV).r;
       o.a = step(0.0,f-blendValue);
-      #if IS_GRAY
-        float gray  = 0.2126 * o.r + 0.7152 * o.g + 0.0722 * o.b;
-        o.r = o.g = o.b = gray;
-      #endif
     #endif
 
     o *= color;

@@ -10,7 +10,7 @@ Cocos Creator v3.5.x
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | 1 | 2D | [图片闪光](#spriteflashlight) | 2 | 2D | [受击闪白](#hitwhite) | 3 | 2D | [UI内发光](#glowinner) |
 | 4 | 2D | [高斯模糊](#gaussianblur) | 5 | 2D | [圆形头像](#circleavatar) | 6 | 2D | [图片溶解](#spritedissolve) |
-| 7 | 2D | [图片合集](#spritefilter) | 8 | 2D | [渐变过渡的相册](#gradualtransitionalalbum) | 9 | 2D | [马赛克](#spritemosaic) |
+| 7 | 2D | [图片特效合集](#spritefilter) | 8 | 2D | [渐变过渡的相册](#gradualtransitionalalbum) | 9 | 2D | [马赛克](#spritemosaic) |
 | 10 | 2D | [镜面光泽](#spritestreamer) | 11 | 2D | [水面波纹](#waterspread) | 12 | 2D | [灯光跟随](#followspot) |
 | 13 | 2D | [融球](#metaball) | 14 | 2D | [图片消融](#spriteablation) | 15 | 2D | [2D灯光](#sprite2dlight) |
 | 16 | 2D | [摸牌](#drawcard) | 17 | 2D | [按钮流光](#buttonambilight) | 18 | 2D | [彩虹](#spritedrawrainbow) |
@@ -25,7 +25,9 @@ Cocos Creator v3.5.x
 | 43 | 2D | [光行](#lightrun) | 44 | 2D | [心跳](#heartbeat) | 45 | 2D | [超级马里奥](#supermario) |
 | 46 | 2D | [旋转的圆点](#swirlingdots) | 47 | 2D | [变形花](#deformflower) | 48 | 2D | [星空](#starbackground) |
 | 49 | 2D | [草地](#grassy) | 50 | 2D | [空间传送门](#glowcircle) | 51 | 2D | [形状调整](#tweaked) |
-| 52 | 2D | [ShaderBook特效](#shaderbook) | 53 | 2D | [下雨](#rain) |
+| 52 | 2D | [ShaderBook特效](#shaderbook) | 53 | 2D | [下雨](#rain) | 54 | 2D | [蓝天白云](#cloud) |
+| 55 | 2D | [微笑](#smile) | 56 | 2D | [Emoji风格微笑](#emojismile) | 57 | 2D | [三叶草](#clover) |
+| 58 | 2D | [色环](#colorcircle) | 59 | 2D | [头像边缘流光](#headframe) |
 
 ### 3D
 | NO1 | Type1 | Proj1 | NO2 | Type2 | Proj2 | NO3 | Type3 | Proj3 |
@@ -35,6 +37,7 @@ Cocos Creator v3.5.x
 | 7 | 3D | [模型描边](#modeloutline) | 8 | 3D | [模型消融](#modeldissolve) | 9 | 3D | [云海](#seaofclouds) |
 | 10 | 3D | [模型擦除](#modelerase) | 11 | 3D | [UV动画](#uvanimation) | 12 | 3D | [UV动画混合](#uvanimationblend) |
 | 13 | 3D | [UV动画扰动](#uvanimationdistortion) | 14 | 3D | [UV动画移动扰动](#uvanimationmovedistortion) | 15 | 3D | [模型扰动](#modeldistortion) |
+| 16 | 3D | [模型特效](#modeleffect) |
 
 ## Examples
 ### SpriteFlashLight
@@ -76,7 +79,7 @@ Cocos Creator v3.5.x
 ### SpriteFilter
 | 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.7 | 2D | [老照片/置灰/冰冻/反相/动画](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2d/Creator3.5.0_2D_Sprite_Filter)  | 3.5.0 | [返回顶部](#2d) | 无 |
+| 1.7 | 2D | [图片特效合集](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2d/Creator3.5.2_2D_Sprite_Filter)  | 3.5.2 | [返回顶部](#2d) | 无 |
 <div align=center><img src="./image/202202/2022022402.png" width="400" height="300" /></div>
 
 ### GradualTransitionalAlbum
@@ -307,6 +310,12 @@ Cocos Creator v3.5.x
 | 2.15 | 3D | [模型扰动](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/3d/Creator3.5.2_3D_ModelDistortion) | 3.5.2 | [返回顶部](#3d) | 无 |
 <div align=center><img src="./gif/202207/2022072105.gif" width="400" height="300" /></div>
 
+### ModelEffect
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 2.16 | 3D | [模型特效](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/3d/Creator3.5.2_3D_ModelEffect) | 3.5.2 | [返回顶部](#3d) | 无 |
+<div align=center><img src="./gif/202207/2022072201.gif" width="400" height="300" /></div>
+
 ### Transition
 | 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
 | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -444,3 +453,39 @@ Cocos Creator v3.5.x
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | 3.23 | 2D | [下雨](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP1/Creator3.5.2_2D_Rain) | 3.5.2 | [返回顶部](#2d) | 无 |
 <div align=center><img src="./image/202207/2022071901.png" width="400" height="300" /></div>
+
+### Cloud
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 3.24 | 2D | [蓝天白云](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP1/Creator3.5.2_2D_Clouds) | 3.5.2 | [返回顶部](#2d) | 无 |
+<div align=center><img src="./gif/202207/2022072301.gif" width="400" height="300" /></div>
+
+### Smile
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 3.25 | 2D | [微笑](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP1/Creator3.5.2_2D_Smile) | 3.5.2 | [返回顶部](#2d) | 无 |
+<div align=center><img src="./image/202207/2022072301.png" width="400" height="300" /></div>
+
+### EmojiSmile
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 3.26 | 2D | [Emoji风格微笑](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP1/Creator3.5.2_2D_EmojiSmile) | 3.5.2 | [返回顶部](#2d) | 无 |
+<div align=center><img src="./image/202207/2022072302.png" width="300" height="300" /></div>
+
+### Clover
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 3.27 | 2D | [三叶草](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP1/Creator3.5.2_2D_Clover) | 3.5.2 | [返回顶部](#2d) | 无 |
+<div align=center><img src="./gif/202207/2022072401.gif" width="400" height="300" /></div>
+
+### ColorCircle
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 3.28 | 2D | [色环](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP1/Creator3.5.2_2D_ColorCircle) | 3.5.2 | [返回顶部](#2d) | 无 |
+<div align=center><img src="./gif/202207/2022072402.gif" width="400" height="300" /></div>
+
+### HeadFrame
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 3.29 | 2D | [头像边缘流光](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP1/Creator3.5.2_2D_HeadFrame) | 3.5.2 | [返回顶部](#2d) | 无 |
+<div align=center><img src="./gif/202207/2022072501.gif" width="400" height="300" /></div>
