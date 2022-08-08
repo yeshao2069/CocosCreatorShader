@@ -97,7 +97,6 @@ CCProgram sprite-fs %{
     o = vec4(vec3(destColor * f) + vec3(destColor.yzx * f/2.0), 1.0);
    
     ALPHA_TEST(o);
-    
     return o;
   }
 }%

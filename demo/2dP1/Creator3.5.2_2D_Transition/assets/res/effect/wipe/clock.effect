@@ -100,11 +100,6 @@ CCProgram sprite-fs %{
       }else{
         o.a = 1.0;
       }
-
-      #if IS_GRAY
-        float gray  = 0.2126 * o.r + 0.7152 * o.g + 0.0722 * o.b;
-        o.r = o.g = o.b = gray;
-      #endif
     #endif
 
     o *= color;

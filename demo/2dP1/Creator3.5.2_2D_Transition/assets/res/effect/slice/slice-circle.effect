@@ -92,17 +92,14 @@ CCProgram sprite-fs %{
       vec2 newUV = (uv0 - 0.5) * vec2(radio, 1.0);
       float dis = length(newUV);
       float choose = 0.0;
-      if(invert > 0){
-        choose = smoothstep(blendValue - effectRange, blendValue + effectRange, dis);
-      }else{
-        choose = 1.0 - smoothstep(blendValue - effectRange, blendValue + effectRange, dis);
+      if(invert > 0) {
+        choose = smoothstep(blendValue - effectRange, 
+                    blendValue + effectRange, dis);
+      } else {
+        choose = 1.0 - smoothstep(blendValue - effectRange, 
+                    blendValue + effectRange, dis);
       }
-
       o = mix(o, background, choose);
-      #if IS_GRAY
-        float gray  = 0.2126 * o.r + 0.7152 * o.g + 0.0722 * o.b;
-        o.r = o.g = o.b = gray;
-      #endif
     #endif
 
     o *= color;

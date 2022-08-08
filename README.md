@@ -27,7 +27,8 @@ Cocos Creator v3.5.x
 | 49 | 2D | [草地](#grassy) | 50 | 2D | [空间传送门](#glowcircle) | 51 | 2D | [形状调整](#tweaked) |
 | 52 | 2D | [ShaderBook特效](#shaderbook) | 53 | 2D | [下雨](#rain) | 54 | 2D | [蓝天白云](#cloud) |
 | 55 | 2D | [微笑](#smile) | 56 | 2D | [Emoji风格微笑](#emojismile) | 57 | 2D | [三叶草](#clover) |
-| 58 | 2D | [色环](#colorcircle) | 59 | 2D | [头像边缘流光](#headframe) |
+| 58 | 2D | [色环](#colorcircle) | 59 | 2D | [头像边缘流光](#headframe) | 60 | 2D | [文字边缘](#outeredgeoftext) |
+| 61 | 2D | [八角形](#octagrams) | 62 | 2D | [分形树](#fractaltrees) |
 
 ### 3D
 | NO1 | Type1 | Proj1 | NO2 | Type2 | Proj2 | NO3 | Type3 | Proj3 |
@@ -37,7 +38,7 @@ Cocos Creator v3.5.x
 | 7 | 3D | [模型描边](#modeloutline) | 8 | 3D | [模型消融](#modeldissolve) | 9 | 3D | [云海](#seaofclouds) |
 | 10 | 3D | [模型擦除](#modelerase) | 11 | 3D | [UV动画](#uvanimation) | 12 | 3D | [UV动画混合](#uvanimationblend) |
 | 13 | 3D | [UV动画扰动](#uvanimationdistortion) | 14 | 3D | [UV动画移动扰动](#uvanimationmovedistortion) | 15 | 3D | [模型扰动](#modeldistortion) |
-| 16 | 3D | [模型特效](#modeleffect) |
+| 16 | 3D | [模型特效](#modeleffect) | 17 | 3D | [3D导航线](#guideline) | 18 | 3D | [模型透视](#modelperspective) |
 
 ## Examples
 ### SpriteFlashLight
@@ -241,13 +242,13 @@ Cocos Creator v3.5.x
 ### LowPolyWater
 | 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| 2.4 | 3D | [LowPoly风格水面](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/3d/Creator3.5.1_3D_LowPolyStyleWater) | 3.5.1 | [返回顶部](#3d) | 无 |
+| 2.4 | 3D | [LowPoly风格水面](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/3d/Creator3.5.2_3D_LowPolyStyleWater) | 3.5.2 | [返回顶部](#3d) | 无 |
 <div align=center><img src="./gif/202206/2022060202.gif" width="400" height="300" /></div>
 
 ### NoiseWater
 | 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| 2.5 | 3D | [噪声水面](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/3d/Creator3.5.1_3D_NoiseWater) | 3.5.1 | [返回顶部](#3d) | 无 |
+| 2.5 | 3D | [噪声水面](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/3d/Creator3.5.2_3D_NoiseWater) | 3.5.2 | [返回顶部](#3d) | 无 |
 <div align=center><img src="./gif/202206/2022061601.gif" width="400" height="300" /></div>
 
 ### ModelInnerGlow
@@ -315,6 +316,18 @@ Cocos Creator v3.5.x
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | 2.16 | 3D | [模型特效](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/3d/Creator3.5.2_3D_ModelEffect) | 3.5.2 | [返回顶部](#3d) | 无 |
 <div align=center><img src="./gif/202207/2022072201.gif" width="400" height="300" /></div>
+
+### GuideLine
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 2.17 | 3D | [3D导航线](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/3d/Creator3.5.2_3D_GuideLine) | 3.5.2 | [返回顶部](#3d) | 无 |
+<div align=center><img src="./gif/202207/2022072601.gif" width="400" height="300" /></div>
+
+### ModelPerspective
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 2.18 | 3D | [模型透视](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/3d/Creator3.5.2_3D_ModelPerspective) | 3.5.2 | [返回顶部](#3d) | 无 |
+<div align=center><img src="./gif/202208/2022080501.gif" width="400" height="300" /></div>
 
 ### Transition
 | 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
@@ -489,3 +502,21 @@ Cocos Creator v3.5.x
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | 3.29 | 2D | [头像边缘流光](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP1/Creator3.5.2_2D_HeadFrame) | 3.5.2 | [返回顶部](#2d) | 无 |
 <div align=center><img src="./gif/202207/2022072501.gif" width="400" height="300" /></div>
+
+### OuterEdgeOfText
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 3.30 | 2D | [文字边缘](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP1/Creator3.5.2_2D_OuterEdgeOfText) | 3.5.2 | [返回顶部](#2d) | 无 |
+<div align=center><img src="./gif/202208/2022080502.gif" width="400" height="300" /></div>
+
+### Octagrams
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4.1 | 2D | [八角形](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP2/Creator3.5.2_2D_Octagrams) | 3.5.2 | [返回顶部](#2d) | 无 |
+<div align=center><img src="./gif/202208/2022080801.gif" width="400" height="300" /></div>
+
+### FractalTrees
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4.2 | 2D | [分形树](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP2/Creator3.5.2_2D_FractalTrees) | 3.5.2 | [返回顶部](#2d) | 无 |
+<div align=center><img src="./gif/202208/2022080802.gif" width="400" height="300" /></div>
