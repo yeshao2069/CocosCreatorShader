@@ -9,7 +9,9 @@
   },
   "_techIdx": 0,
   "_defines": [
-    {}
+    {
+      "USE_TEXTURE": true
+    }
   ],
   "_states": [
     {
@@ -24,7 +26,6 @@
       "blendState": {
         "targets": [
           {
-            "blend": false,
             "blendSrc": 1,
             "blendDst": 0,
             "blendDstAlpha": 0
@@ -36,7 +37,7 @@
   "_props": [
     {
       "noiseTex": {
-        "__uuid__": "3a4f33aa-dcb0-46a9-ac91-def47d738586@6c48a",
+        "__uuid__": "347a6b9b-9c64-4c30-bf3b-ce1efa273876@6c48a",
         "__expectedType__": "cc.Texture2D"
       }
     }

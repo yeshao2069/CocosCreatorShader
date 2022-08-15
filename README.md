@@ -28,7 +28,8 @@ Cocos Creator v3.5.x
 | 52 | 2D | [ShaderBook特效](#shaderbook) | 53 | 2D | [下雨](#rain) | 54 | 2D | [蓝天白云](#cloud) |
 | 55 | 2D | [微笑](#smile) | 56 | 2D | [Emoji风格微笑](#emojismile) | 57 | 2D | [三叶草](#clover) |
 | 58 | 2D | [色环](#colorcircle) | 59 | 2D | [头像边缘流光](#headframe) | 60 | 2D | [文字边缘](#outeredgeoftext) |
-| 61 | 2D | [八角形](#octagrams) | 62 | 2D | [分形树](#fractaltrees) |
+| 61 | 2D | [八角形](#octagrams) | 62 | 2D | [分形树](#fractaltrees) | 63 | 2D | [等离子球](#plasmaglobe) |
+| 64 | 2D | [星巢](#starnest) | 65 | 2D | [风格化fuji](#cyberfuji) | 66 | 2D | [复古的太阳](#retrosun) |
 
 ### 3D
 | NO1 | Type1 | Proj1 | NO2 | Type2 | Proj2 | NO3 | Type3 | Proj3 |
@@ -506,17 +507,41 @@ Cocos Creator v3.5.x
 ### OuterEdgeOfText
 | 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| 3.30 | 2D | [文字边缘](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP1/Creator3.5.2_2D_OuterEdgeOfText) | 3.5.2 | [返回顶部](#2d) | 无 |
+| 3.30 | 2D | [文字边缘](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP1/Creator3.5.2_2D_OuterEdgeOfText) | 3.5.2 | [返回顶部](#2d) | 来源：shadertoy.com |
 <div align=center><img src="./gif/202208/2022080502.gif" width="400" height="300" /></div>
 
 ### Octagrams
 | 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| 4.1 | 2D | [八角形](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP2/Creator3.5.2_2D_Octagrams) | 3.5.2 | [返回顶部](#2d) | 无 |
+| 4.1 | 2D | [八角形](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP2/Creator3.5.2_2D_Octagrams) | 3.5.2 | [返回顶部](#2d) | 来源：shadertoy.com |
 <div align=center><img src="./gif/202208/2022080801.gif" width="400" height="300" /></div>
 
 ### FractalTrees
 | 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| 4.2 | 2D | [分形树](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP2/Creator3.5.2_2D_FractalTrees) | 3.5.2 | [返回顶部](#2d) | 无 |
+| 4.2 | 2D | [分形树](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP2/Creator3.5.2_2D_FractalTrees) | 3.5.2 | [返回顶部](#2d) | 来源：shadertoy.com |
 <div align=center><img src="./gif/202208/2022080802.gif" width="400" height="300" /></div>
+
+### PlasmaGlobe
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4.3 | 2D | [等离子球](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP2/Creator3.5.2_2D_PlasmaGlobe) | 3.5.2 | [返回顶部](#2d) | 来源：shadertoy.com |
+<div align=center><img src="./gif/202208/2022080901.gif" width="400" height="300" /></div>
+
+### StarNest
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4.4 | 2D | [星巢](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP2/Creator3.5.2_2D_StarNest) | 3.5.2 | [返回顶部](#2d) | 来源：shadertoy.com |
+<div align=center><img src="./gif/202208/2022080902.gif" width="400" height="300" /></div>
+
+### CyberFuji
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4.5 | 2D | [风格化fuji](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP2/Creator3.5.2_2D_CyberFuji) | 3.5.2 | [返回顶部](#2d) | 来源：shadertoy.com |
+<div align=center><img src="./gif/202208/2022081501.gif" width="400" height="300" /></div>
+
+### RetroSun
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4.6 | 2D | [复古的太阳](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP2/Creator3.5.2_2D_RetroSun) | 3.5.2 | [返回顶部](#2d) | 来源：shadertoy.com |
+<div align=center><img src="./gif/202208/2022081502.gif" width="400" height="300" /></div>
