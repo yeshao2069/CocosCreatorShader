@@ -211,5 +211,5 @@
 | 31 | 2D | [UI外发光](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.4.x/demo/Sprite/Creator3.4.2_2D_Sprite_GlowOutter) | [返回顶部](#QuickLinks) |
 <div align=center><img src="./gif/202205/2022050101.gif" width="400" height="300" /></div>
 
-## Mark
-Cocos Creator 3.4.x 版本列举效果 31 种，会同步更新到 Cocos Creator 3.5.x 版本，后续 Cocos Creator 3.4.x 将不会同步新的效果，请移步到 3.5.x 版本查看最新效果。
+### Mark
+Cocos Creator Shader 3.4.x 版本列举效果 31 种，会同步更新到 [Cocos Creator Shader 3.5.x](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x) 版本，后续 Cocos Creator Shader 3.4.x 将不会同步新的效果，请移步到 3.5.x 版本查看最新效果。
