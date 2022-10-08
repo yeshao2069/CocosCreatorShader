@@ -165,5 +165,5 @@
 
 <div align=center><img src="./image/202202/2022022501.jpg" width="400" height="300" /></div>
 
-## Mark
-Cocos Creator 3.0.x 版本列举效果 24 种，会同步更新到 Cocos Creator 3.4.x 版本，后续 Cocos Creator 3.0.x 将不会同步新的效果，请移步到 3.4.x 版本查看最新效果。
+### Mark
+Cocos Creator Shader 3.0.x 版本列举效果 24 种，会同步更新到 [Cocos Creator Shader 3.4.x](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.4.x) 版本，后续 Cocos Creator Shader 3.0.x 将不会同步新的效果，请移步到 3.4.x 版本查看最新效果。

@@ -1,5 +1,3 @@
-## Cocos Creator Shader
-
 ### 简介
 基于 CocosCreator 3.0.0 版本创建的 高斯模糊 工程
 
