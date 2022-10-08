@@ -1,0 +1,184 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+CCEffect %{
+  techniques:
+  - name: opaque
+    passes:
+    - vert: xRay-vs:vert
+      frag: xRay-fs:frag_ray
+      properties: &props_ray
+        rayColor:      { value: [1, 1, 1, 1], linear: true, editor: { type: color } }
+        rayPower:     { value: 0, editor: { slide: true, range: [0.0, 1.0], step: 0.001 }}
+    - vert: xRay-vs:vert
+      frag: xRay-fs:frag
+      properties: &props
+        mainTexture:    { value: grey }
+        tilingOffset:   { value: [1, 1, 0, 0] }
+        mainColor:      { value: [1, 1, 1, 1], linear: true, editor: { type: color } }
+        colorScale:     { value: [1, 1, 1], target: colorScaleAndCutoff.xyz }
+        alphaThreshold: { value: 0.5, target: colorScaleAndCutoff.w, editor: { parent: USE_ALPHA_TEST } }
+        color:          { target: mainColor, linear: true, editor: { visible: false } } # backward compability
+      migrations: &migs
+        properties:
+          mainColor:    { formerlySerializedAs: color }
+
+  - name: transparent
+    passes:
+    - vert: xRay-vs:vert
+      frag: xRay-fs:frag
+      depthStencilState: &d1
+        depthTest: true
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      properties: *props
+      migrations: *migs
+  - name: add
+    passes:
+    - vert: xRay-vs:vert
+      frag: xRay-fs:frag
+      rasterizerState: &r1 { cullMode: none }
+      depthStencilState: *d1
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one
+          blendSrcAlpha: src_alpha
+          blendDstAlpha: one
+      properties: *props
+      migrations: *migs
+  - name: alpha-blend
+    passes:
+    - vert: xRay-vs:vert
+      frag: xRay-fs:frag
+      rasterizerState: *r1
+      depthStencilState: *d1
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendSrcAlpha: src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      properties: *props
+      migrations: *migs
+}%
+
+CCProgram xRay-vs %{
+  precision highp float;
+  #include <legacy/input-standard>
+  #include <builtin/uniforms/cc-global>
+  #include <legacy/decode-base>
+  #include <legacy/local-batch>
+//   #include <legacy/input>
+  #include <legacy/fog-vs>
+
+  #if USE_VERTEX_COLOR
+    in lowp vec4 a_color;
+    out lowp vec4 v_color;
+  #endif
+
+  #if USE_TEXTURE
+    out vec2 v_uv;
+    uniform TexCoords {
+      vec4 tilingOffset;
+    };
+  #endif
+
+
+  out vec3 v_normal;
+  out vec3 v_viewDir;
+
+  vec4 vert () {
+    StandardVertInput In; //要获取法线信息得改一下 https://docs.cocos.com/creator/3.4/manual/zh/shader/effect-syntax.html?h=ccvertinput
+    CCVertInput(In);
+
+    vec4 position = In.position;
+
+    mat4 matWorld, matWorldIT;
+    CCGetWorldMatrixFull(matWorld, matWorldIT);
+
+    v_normal = normalize((matWorldIT * vec4(In.normal, 0.0)).xyz); // 获取世界的法线坐标 归一化
+    vec3 wPosition = (matWorld * position).xyz; // 获取世界的顶点坐标
+    v_viewDir = normalize(cc_cameraPos.xyz - wPosition); // 摄像机减顶点坐标为视角朝向 归一化
+
+    #if USE_TEXTURE
+      v_uv = a_texCoord * tilingOffset.xy + tilingOffset.zw;
+      #if SAMPLE_FROM_RT
+        CC_HANDLE_RT_SAMPLE_FLIP(v_uv);
+      #endif
+    #endif
+
+    #if USE_VERTEX_COLOR
+      v_color = a_color;
+    #endif
+
+    CC_TRANSFER_FOG(matWorld * position);
+    return cc_matProj * (cc_matView * matWorld) * position;
+  }
+}%
+
+CCProgram xRay-fs %{
+  precision highp float;
+  #include <legacy/output-standard>
+  #include <legacy/fog-fs>
+
+  #if USE_ALPHA_TEST
+    #pragma define-meta ALPHA_TEST_CHANNEL options([a, r, g, b])
+  #endif
+
+  #if USE_TEXTURE
+    in vec2 v_uv;
+    uniform sampler2D mainTexture;
+  #endif
+
+  uniform Constant {
+    vec4 mainColor;
+    vec4 colorScaleAndCutoff;
+    vec4 rayColor;
+    float rayPower;
+  };
+
+  #if USE_VERTEX_COLOR
+    in lowp vec4 v_color;
+  #endif
+
+  in vec3 v_normal;
+  in vec3 v_viewDir;
+
+  vec4 frag () {
+    vec4 o = mainColor;
+    o.rgb *= colorScaleAndCutoff.xyz;
+
+    #if USE_VERTEX_COLOR
+      o.rgb *= SRGBToLinear(v_color.rgb);//use linear
+      o.a *= v_color.a;
+    #endif
+
+    #if USE_TEXTURE
+      vec4 texColor = texture(mainTexture, v_uv);
+      texColor.rgb = SRGBToLinear(texColor.rgb);
+      o *= texColor;
+    #endif
+
+    #if USE_ALPHA_TEST
+      if (o.ALPHA_TEST_CHANNEL < colorScaleAndCutoff.w) discard;
+    #endif
+
+    CC_APPLY_FOG(o);
+    return CCFragOutput(o);
+  }
+
+  vec4 frag_ray () {
+    vec4 o = rayColor;
+    float ndv = max(0.001, dot(v_normal, v_viewDir));
+    float rim = 1.0 - ndv;
+    o.rgb *= rayPower * rim;
+    CC_APPLY_FOG(o);
+    return CCFragOutput(o);
+  }
+}%

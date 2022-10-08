@@ -1,0 +1,165 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+
+        ## 自定义
+        radius: { value: 0.5, editor: { tooltip: "半径"}}
+        progress: { value: 0.5 }
+        tex: { value: white }
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 color;
+  out vec2 uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(uv0);
+    #endif
+    color = a_color;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+
+  in vec4 color;
+
+  #if USE_TEXTURE
+    in vec2 uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  #pragma define PI 3.1415926
+  uniform MXD {
+    float radius;
+    float progress;
+  };
+  uniform sampler2D tex;
+
+  vec4 frag () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+      o *= CCSampleWithAlphaSeparated(cc_spriteTexture, uv0);
+      #if IS_GRAY
+        float gray  = 0.2126 * o.r + 0.7152 * o.g + 0.0722 * o.b;
+        o.r = o.g = o.b = gray;
+      #endif
+    #endif
+
+    float primeter = 2.0 * PI * radius;              // 周长
+    float x = uv0.x;
+    float outLen = 1.0 - progress;                   // 超出的部分
+    float range = 3.0 / 4.0;
+    vec2 c_uv0 = uv0;
+
+    float realX = uv0.x;
+    float offset = x - progress;
+
+    bool draw = true;
+    bool useTexture2 = false;
+    if (x > progress) {    // 两种情况
+      if (outLen <= primeter * 0.25) {
+        if (offset > sin(outLen / radius) * radius) {
+          draw = false;
+        } else {
+          realX = asin(offset / radius) * radius + progress;
+        }
+      } else {
+        if (outLen < primeter * 0.5 && offset < cos((outLen - primeter * 0.25) / radius) * radius) {
+          realX = asin(offset / radius) * radius + progress;
+        } else if(offset >= radius) {
+          draw = false;
+        } else {
+          realX = acos(offset / radius) * radius + progress + primeter * .25;
+          useTexture2 = true;
+        }
+      }
+    } else if(outLen > primeter * 0.5) {
+      if (outLen < primeter * 0.75) {
+        outLen = outLen - primeter * 0.5;
+        if (offset < -sin(outLen / radius) * radius) {
+          realX = realX;
+        } else {
+          realX = asin(-offset / radius) * radius + progress + primeter * 0.5;
+          useTexture2 = true;
+        }
+      } else {
+        if (offset < -radius) {
+          realX = realX;
+        } else {
+          realX = asin(-offset / radius) * radius + progress + primeter * 0.5;
+          useTexture2 = true;
+        }      
+      }
+    } else {
+      
+    }
+    
+    
+    if (draw) {
+      c_uv0.x = realX;
+      if (useTexture2) {
+        o = texture(tex, c_uv0);
+      } else {
+        o = texture(cc_spriteTexture, c_uv0);
+      }
+      
+    } else {
+      o.a = 0.0;
+    }
+
+    o *= color;
+    ALPHA_TEST(o);
+    return o;
+  }
+}%

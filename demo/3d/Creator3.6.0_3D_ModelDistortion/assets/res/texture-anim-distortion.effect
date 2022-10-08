@@ -1,0 +1,73 @@
+// Effect Syntax Guide: https://github.com/cocos-creator/docs-3d/blob/master/zh/material-system/effect-syntax.md
+
+CCEffect %{
+  techniques:
+  - name: opaque
+    passes:
+    - vert: legacy/main-functions/general-vs:vert # builtin header
+      frag: unlit-fs:frag
+      properties: &props
+        mainTexture:    { value: white }
+        detailTexture:    { value: black }
+        strenghten: { value: 0.05, target: params.x }
+        cells: { value: [1.0,1.0], target: params.yz }
+        detailColorFactor: { value: 0.5, target: params.w }
+        fps: { value: 12.0 }
+
+        mainColor:      { value: [1, 1, 1, 1], editor: { type: color } }
+  - name: transparent
+    passes:
+    - vert: legacy/main-functions/general-vs:vert # builtin header
+      frag: unlit-fs:frag
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendSrcAlpha: src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      properties: *props
+}%
+
+CCProgram unlit-fs %{
+  precision highp float;
+  #include <legacy/output>
+  #include <legacy/fog-fs>
+
+  in vec2 v_uv;
+  in vec3 v_position;
+
+  uniform sampler2D mainTexture;
+  uniform sampler2D detailTexture;
+
+  uniform Constant {
+    vec4 mainColor;
+    vec4 params;
+    float fps;
+  };
+
+  vec4 frag () {
+    float strenghten = params.x;
+    vec2 cells = params.yz;
+    float detailColorFactor = params.w;
+
+    float index = floor(cc_time.x * fps);
+    float row = cells.x;
+    float col = cells.y;
+    vec2 animUV = v_uv / cells.yx + vec2(mod(index,col)/col,floor(index/col)/row);
+
+
+    vec4 detailColor = texture(detailTexture,animUV);
+
+    float gray = detailColor.r * 0.299 + detailColor.g * 0.587 + detailColor.b * 0.114;
+    
+    vec2 offset = (detailColor.rg - 0.5) * 2.0 * strenghten * gray;
+
+    vec4 color = mainColor * texture(mainTexture, v_uv + offset);
+    
+    color.rgb += detailColor.rgb * detailColorFactor;
+
+    CC_APPLY_FOG(color, v_position);
+    return CCFragOutput(color);
+  }
+}%

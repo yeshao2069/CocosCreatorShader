@@ -1,0 +1,124 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+
+        ## 自定义参数   分辨率
+        resolution: { value: [960, 640] }
+}%
+
+CCProgram sprite-vs %{
+  precision mediump float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 color;
+  out vec2 uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(uv0);
+    #endif
+    color = a_color;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  #include <builtin/uniforms/cc-global>
+
+  in vec4 color;
+  in vec2 uv0;
+
+  uniform MXD {
+    vec2 resolution;
+  };
+
+  vec4 frag () {
+    vec4 o = vec4(0, 0, 0, 1);
+
+    vec2 uv = uv0.xy;
+    vec2 rs = resolution.xy;
+    float time = cc_time.x;
+    
+    // 反转文理y坐标
+	  vec2 p = (1. - 2.0 * uv * rs + rs) / min(resolution.y, resolution.x);
+    // background color
+    vec3 bcol = vec3(1.0, 0.8, 0.7 - 0.07 * p.y) * (1.0 - 0.25 * length(p));
+    // animate
+    float tt = mod(time, 1.5) / 1.5;
+    float ss = pow(tt, .2 ) * 0.5 + 0.5;
+    ss = 1.0 + ss * 0.5 * sin(tt * 6.2831 * 3.0 + p.y * 0.5) * exp(-tt * 4.0);
+    p *= vec2(0.5, 1.5) + ss*vec2(0.5, -0.5);
+
+    #if USE_SHAPE
+      p *= 0.8;
+      p.y = -0.1 - p.y*1.2 + abs(p.x)*(1.0-abs(p.x));
+      float r = length(p);
+      float d = 0.5;
+    #else
+      p.y -= 0.25;
+        float a = atan(p.x,p.y)/3.141593;
+        float r = length(p);
+        float h = abs(a);
+        float d = (13.0*h - 22.0*h*h + 10.0*h*h*h)/(6.0-5.0*h);
+    #endif
+
+
+    // color
+    float s = 0.75 + 0.75 * p.x;
+    s *= 1.0 - 0.4 * r;
+    s = 0.3 + 0.7 * s;
+    s *= 0.5 + 0.5 * pow(1.0 - clamp(r / d, 0.0, 1.0 ), 0.1);
+    vec3 hcol = vec3(1.0, 0.5 * r, 0.3) * s;
+    vec3 col = mix(bcol, hcol, smoothstep(-0.01, 0.01, d - r));
+
+    o = vec4(col,1.);
+   
+    ALPHA_TEST(o);
+    
+    return o;
+  }
+}%

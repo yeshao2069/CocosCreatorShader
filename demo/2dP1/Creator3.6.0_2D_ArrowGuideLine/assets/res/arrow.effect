@@ -1,0 +1,188 @@
+// Effect Syntax Guide: https://github.com/cocos-creator/docs-3d/blob/master/zh/material-system/effect-syntax.md
+
+CCEffect %{
+  techniques:
+  - name: opaque
+    passes:
+    - vert: unlit-vs:vert # builtin header
+      frag: unlit-fs:frag
+      properties: &props
+        mainTexture:    { value: white }
+        # cubeTexture:    { value: white } # cubeTexture 天空盒纹理
+        # maskTexture:    { value: white }
+        # reflectionStrengthen: { value: 0.5 }
+
+        mainColor:      { value: [1, 1, 1, 1], editor: { type: color } }
+        # centerPos:      { value: [1,2.113, 1, 1]}
+        # power:          { value: 0.25 }
+        # frequency:      { value: 6.0}
+        # speed:          { value: 2.0}
+        tilingOffset: 
+            value: 
+              - 1
+              - 1
+              - 0
+              - 0
+
+  - name: transparent
+    passes:
+    - vert: unlit-vs:vert # builtin header
+      frag: unlit-fs:frag
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendSrcAlpha: src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      properties: *props
+}%
+
+//顶点着色器
+CCProgram unlit-vs %{
+          precision highp float;
+          #include <legacy/input-standard>
+          #include <builtin/uniforms/cc-global>
+          #include <legacy/decode-base>
+          #include <legacy/local-batch>
+          #include <legacy/input-standard>
+          #include <legacy/fog-vs>
+          #include <legacy/shadow-map-vs>
+
+          in vec4 a_color;
+          #if HAS_SECOND_UV
+            in vec2 a_texCoord1;
+          #endif
+
+          out vec3 v_position;
+          out vec3 v_normal;
+          out vec3 v_tangent;
+          out vec3 v_bitangent;
+          out vec4 viewWorld;
+
+          out vec2 v_uv;
+          out vec2 v_uv1;
+          out vec4 v_color;
+
+          // uniform Constants {
+          //     vec4 centerPos;
+          //     float power;
+          //     float frequency;
+          //     float speed;
+          // };
+
+          uniform TexCoords {
+
+             vec4 tilingOffset;
+
+          };
+
+
+          vec4 vert () {
+
+            StandardVertInput In;
+            CCVertInput(In);
+
+            // cc_matWorld	highp mat4	本地空间转世界空间。
+            // cc_matWorldIT	highp mat4	本地空间转世界空间逆转置。
+            mat4 matWorld, matWorldIT;//
+            CCGetWorldMatrixFull(matWorld, matWorldIT);//获得世界空间矩阵
+
+            vec4 pos = matWorld * In.position;//顶点坐标 转世界空间的坐标
+
+            v_position = pos.xyz;//世界空间坐标下 坐标xyz
+
+            // 顶点法线
+            v_normal = normalize((matWorldIT * vec4(In.normal, 0.0)).xyz);
+            // 顶点切线
+            v_tangent = normalize((matWorld * vec4(In.tangent.xyz, 0.0)).xyz);
+            
+            // 顶点双切线
+            // note the cross order 顶点双切线可以通过顶点法线和顶点切线的叉积计算得出
+            v_bitangent = cross(v_normal, v_tangent) * In.tangent.w; 
+
+            //世界空间的观察向量
+            //世界空间的观察向量可以使用返回摄像机世界空间位置的内置参数 cc_cameraPos 和世界空间的顶点位置计算得出
+            viewWorld = normalize(cc_cameraPos - (matWorld * In.position)); 
+            
+
+            // v_uv = a_texCoord;//uv纹理坐标
+            v_uv = a_texCoord * tilingOffset.xy + tilingOffset.zw; // 顶点着色器 平铺及拉伸
+
+            #if HAS_SECOND_UV
+              v_uv1 = a_texCoord1;//第二张uv纹理坐标
+            #endif
+            v_color = a_color;//顶点颜色
+
+            // //顶点 波动            
+            // //计算每个顶点到波纹中心点的距离
+            // float dis=distance(centerPos.xyz,v_position.xyz);
+            // float y=sin(dis*frequency+cc_time.x*speed)*power;
+            // v_position.y+=y;//对顶点y轴上的值 进行叠加计算
+
+            CC_TRANSFER_FOG(pos);//雾效果
+            CC_TRANSFER_SHADOW(pos);//阴影效果
+
+            // cc_matProj	        mat4	投影矩阵。
+            // cc_matView	        mat4	视图矩阵。
+            // matWorld           mat4   本地空间转世界空间。
+
+            // cc_matProjInv	    mat4	投影逆矩阵。
+            // cc_matViewProj	    mat4	视图投影矩阵。
+            // cc_matViewProjInv	mat4	视图投影逆矩阵。
+            // cc_matViewInv	    mat4	视图逆矩阵。
+            return cc_matProj * (cc_matView * matWorld) * In.position;
+            // vec4 outPut=cc_matProj * (cc_matView * matWorld) * vec4(v_position,1.0);
+            // return outPut;
+
+          }
+
+}%
+
+
+//片元着色器
+CCProgram unlit-fs %{
+  precision highp float;
+  #include <legacy/output>
+  #include <legacy/fog-fs>
+
+  in vec2 v_uv;
+  in vec3 v_position;
+  in vec3 v_normal;
+
+  uniform sampler2D mainTexture;
+  // uniform sampler2D maskTexture;
+  // uniform samplerCube cubeTexture;// 镜面反射 立方体 纹理 
+
+  uniform Constant {
+    vec4 mainColor;
+    // float reflectionStrengthen;
+  };
+
+  vec4 frag () {
+    // vec4 maskColor = texture(maskTexture,v_uv);
+
+    // float reflectionMask = maskColor.r * reflectionStrengthen;
+
+    // //reflect    R = V - 2 * N * dot(N,V)
+
+    // vec3 V = normalize(v_position - cc_cameraPos.xyz);
+    // vec3 N = normalize(v_normal);
+    // vec3 R = V - 2.0 * N * dot(N,V);
+    // vec4 cubeColor = texture(cubeTexture,R);
+
+    float f_Speed=0.2;//流动速度
+    vec2 fl_uv = vec2(v_uv.x -cc_time.x*f_Speed, v_uv.y );
+    vec4 texcolor = texture(mainTexture,fl_uv);
+
+    vec4 col = mainColor * texcolor;
+
+    // col.rgb = mix(col.rgb,cubeColor.rgb,reflectionMask);
+    CC_APPLY_FOG(col, v_position);
+    // #if SHOW_REFLECTION_STRENGTHEN
+    //     return CCFragOutput(vec4(reflectionMask,reflectionMask,reflectionMask,1.0));
+    // #else
+    return CCFragOutput(col);
+    // #endif
+  }
+}%

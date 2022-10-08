@@ -1,0 +1,223 @@
+// Copyright 2020 Cao Gaoting<caogtaa@gmail.com>
+// https://caogtaa.github.io
+// This file is licensed under the MIT License.
+// License text available at https://opensource.org/licenses/MIT
+
+/*
+ * Date: 2020-07-13 02:44:17
+ * LastEditors: GT<caogtaa@gmail.com>
+ * LastEditTime: 2020-07-22 14:03:10
+*/ 
+
+CCEffect %{
+  techniques:
+  - name: opaque
+    passes:
+    - vert: unlit-vs:vert
+      frag: unlit-fs:frag
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendSrcAlpha: src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        mainTexture: { value: white }
+        N: { value: 6, inspector: { displayName: '多边形边数'}}
+        C: { value: [1.0, 0.0], inspector: { displayName: '指数' } }
+        R: { value: 0.9, inspector: { displayName: '内接圆半径' } }
+        Rm: { value: 0.7, inspector: { displayName: '遮罩内接圆半径' } }
+        scale: { value: 2.5, inspector: { displayName: '同心圆缩小系数' } }
+        angle: { value: 0.13659, inspector: { displayName: '同心圆旋转角(radius)' } }
+        speed: { value: 1.0, inspector: { displayName: '动画速度' } }
+}%
+
+CCProgram unlit-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 color;
+  out vec2 v_uv0;
+  
+  vec4 vert() {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    v_uv0 = a_texCoord;
+
+    color = a_color;
+    v_uv0.y = 1.0 - v_uv0.y;
+
+    return pos;
+  }
+}%
+
+// by caogtaa
+CCProgram unlit-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  #include <builtin/uniforms/cc-global>
+
+  in vec2 v_uv0;
+  uniform sampler2D mainTexture;
+  uniform FARGS {
+      vec2 C;
+      int N;
+      float R;
+      float Rm;
+      float scale;
+      float angle;
+      float speed;
+  };
+
+  #pragma define E	2.718281828459045
+  #pragma define PI	3.141592653589793
+  #pragma define A	c.x
+  #pragma define B	c.y
+  #pragma define X	z.x
+  #pragma define Y	z.y
+
+  float Circle(vec2 uv, vec2 o, float r, float blur) {
+      return smoothstep(0., blur, distance(uv, o) - r);
+  }
+
+  // n: 多边形边的数量 r: 正多边形内接圆半径
+  float Polygon(vec2 uv, int n, float r, float blur) {
+    // Angle and radius from the current pixel
+    float a = atan(uv.x, uv.y) + PI;
+    float rad = 2. * PI / float(n);
+    // Shaping function that modulate the distance
+    float d = cos(floor(0.5 + a / rad) * rad - a) * length(uv);
+    return smoothstep(0., blur, d - r);
+  }
+
+  vec4 PolygonColor(vec2 uv, int n, float r, float blur) {
+    // Angle and radius from the current pixel
+    float a = atan(uv.x, uv.y) + PI;
+    float rad = 2. * PI / float(n);
+    // Shaping function that modulate the distance
+    float d = cos(floor(0.5 + a / rad) * rad - a) * length(uv);
+    vec3 color = vec3(0.2, 1., 0.4);
+    color *= smoothstep(r - 0.01, r, d) * smoothstep(r + 0.01, r, d);
+    color += vec3(0.2, 0., 0.4) * smoothstep(r + 0.02 + blur, r + 0.02, d) * step(0., d - r - 0.02);
+    float pct = smoothstep(0., 0.01, abs(abs(uv.x) - abs(uv.y)));
+    color = mix(vec3(0.2, 1., 0.4), color, pct);
+    return vec4(color, 1.);
+  }
+
+  mat2 R2(float angle){
+      float c = cos(angle);
+      float s = sin(angle);
+      return mat2(c, -s, s, c);
+  }
+
+  vec2 ComplexPow(vec2 z, vec2 c) {
+      float zmod = sqrt(dot(z, z));		// |z|
+      float t = atan(Y, X);
+      
+      float part1 = pow(zmod, A) * pow(E, -B*t);
+      float exp2 = log(zmod) * B;
+      vec2 part2 = vec2(cos(exp2), sin(exp2));
+      float exp3 = A * t;
+      vec2 part3 = vec2(cos(exp3), sin(exp3));
+      
+      vec2 part2x3 = vec2(
+          part2.x * part3.x - part2.y * part3.y,
+          part2.x * part3.y + part2.y * part3.x);
+      
+      return part1 * part2x3;
+  }
+
+  vec4 frag(){
+      // uv原点居中
+      vec2 uv = v_uv0.xy * 2. - 1.;
+      vec2 uvBase = v_uv0.xy * 2. - 1.;
+
+      // 初始图形放大，避免原图形变后边缘片元采样超出图片
+      uv *= 0.5;
+
+      // 同心圆旋转角度，通过uniform传入
+      // float angle = PI / 23.;
+
+      // 同心圆缩放系数，通过uniform传入
+      // float scale = 2.5;
+
+      // 动画速度，通过uniform传入
+      // float speed = 1.0;
+
+      // 整体动画缩放比例，scale值和同心圆的缩放系数保持一致，这样动画循环可以对接
+      float zoom = pow(scale, fract(cc_time.x * speed));
+      uv /= zoom;
+
+      // 当前动画循环次数
+      float loop = floor(cc_time.x * speed);
+
+      // 每个动画循环起始帧做整体旋转，对接上一个循环的末尾
+      uv = R2(angle * loop) * uv;
+
+      // 圆心坐标
+      vec2 origin = vec2(0.);
+
+      // 边缘模糊长度
+      float blur = 0.01;
+      
+      // 指数，目前从uniform中获取
+      // vec2 C = vec2(1., 0.);
+
+      // 旋转矩阵，每次迭代uv旋转一定角度
+      mat2 matR2 = R2(angle);
+
+      // 经螺旋形变后的uv
+      vec2 spiralUV = ComplexPow(uv, C);
+      
+      // 混合后的最终颜色，以第一次形变的图形作为背景
+      // 将uv从(-1, 1)重新映射回(0, 1)区间，然后对纹理采样
+      // vec3 finalColor = texture(mainTexture, spiralUV * 0.5 + 0.5).rgb;
+      vec4 o = PolygonColor(spiralUV, N, R, 0.3);
+
+      for (int i = 0; i < 20; ++i) {
+          // 放大自变量区间的同时对uv进行旋转
+          uv = matR2 * uv * scale;
+
+          // 计算螺旋形变后的uv，用该uv画圆、取色
+          spiralUV = ComplexPow(uv, C);
+          
+          // 获得一个内接圆半径r的形变后的正多边形遮罩
+          float mask = Polygon(spiralUV, N, Rm, blur);
+
+          // 将uv从(-1, 1)重新映射回(0, 1)区间，然后对纹理采样
+          // vec3 color = texture(mainTexture, spiralUV * 0.5 + 0.5).rgb;
+          vec4 color = PolygonColor(spiralUV, N, R, 0.3);
+
+          // 当前遮罩内的片元用新颜色覆盖，遮罩外的保持上一次的颜色
+          o = mix(color, o, mask);
+      }
+      uv = v_uv0.xy * 2. - 1.;
+	    o.a *= Polygon(uv, N, 0.15, 0.2);
+
+      ALPHA_TEST(o);
+      return o;
+  }
+}%

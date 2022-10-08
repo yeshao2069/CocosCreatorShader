@@ -1,0 +1,150 @@
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+        # 自定义参数
+        timeTest: {
+          value: 1.0,
+          editor: {
+            tooltip: "速度"
+          }
+        }
+        RippleColor: {
+          value: [1.0, 1.0, 1.0, 1.0], 
+          editor: { 
+            type: color,
+            tooltip: "水纹颜色"
+          } 
+        }
+        avv: {
+          value: 16.1,
+          editor: {
+            tooltip: "水纹虚幻度 越大越多"
+          }
+        }
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 v_color;
+  out vec2 v_uv0;
+
+  #if USE_TEXTURE
+    in vec2 a_uv0;
+  #endif
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+      v_uv0 = a_uv0;
+    #endif
+
+    v_color = a_color;
+    v_uv0 = a_texCoord;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  #include <builtin/uniforms/cc-global>
+
+  in vec4 v_color;
+
+  #if USE_TEXTURE
+    in vec2 v_uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  uniform ARGS {
+    float timeTest;
+    float avv;
+  };
+
+  uniform Light {
+    vec4 RippleColor;
+  };
+
+  #pragma define concentration 3 //水纹宽度 3  越大越细
+
+  vec4 frag() {
+		vec4 o = vec4(1, 1, 1, 1);
+    
+     #if USE_TEXTURE
+      o *= CCSampleWithAlphaSeparated(cc_spriteTexture, v_uv0);
+    #endif
+
+    o *= v_color;
+    ALPHA_TEST(o);
+
+    float time = timeTest * 0.5;
+    vec2 uv = v_uv0.xy;
+    vec2 p = mod(uv*avv, avv)-250.0;
+    vec2 i = vec2(p);
+    float c = 1.0; //1.0
+    float inten = 0.0045;//0.0045
+
+    for (int n = 0; n < concentration; n++) {
+        float t =  time * (1.0 - (3.5 / float(n+1)));
+        i = p + vec2(cos(t - i.x) + sin(t + i.y), sin(t - i.y) + cos(1.5*t + i.x));
+        c += 1.0/length(vec2(p.x / (cos(i.x+t)/inten),p.y / (cos(i.y+t)/inten)));
+    }
+
+    c /= float(5);
+    c = 1.17-pow(c, 1.4);
+    vec4 tex = CCSampleWithAlphaSeparated(cc_spriteTexture, uv);
+    vec3 colorr = vec3(RippleColor.r,RippleColor.g,RippleColor.b);
+    vec3 colour = vec3(pow(abs(c), 20.0)) ;
+
+    colour = clamp(colour + vec3(0.0, 0.0, .0), 0.0, tex.a);
+    // 混合波光
+    float alpha = c*tex[3];  
+    tex[0] = tex[0] + colour[0]*alpha; 
+    tex[1] = tex[1] + colour[1]*alpha; 
+    tex[2] = tex[2] + colour[2]*alpha;
+
+    o *= tex;
+    
+    return o;
+  }
+}%

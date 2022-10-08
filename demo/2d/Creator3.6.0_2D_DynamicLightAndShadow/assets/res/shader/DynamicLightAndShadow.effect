@@ -1,0 +1,203 @@
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+        colorLeft: { value: [0.80, 0.27, 0.28, 1.], editor: { type: color }}
+        colorRight: { value: [0.26, 0.33, 0.78, 1.], editor: { type: color }}
+        color1: { value: [0.65 ,0.20, 0.81, 1.], editor: { type: color }}
+        color2: { value: [0.68, 0.71, 0.29, 1.], editor: { type: color }}
+        color3: { value: [1., 0.03, 0.11, 1.], editor: { type: color }}
+        u_time: { value: 0.0}
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 v_color;
+  out vec2 v_uv0;
+
+  #if USE_TEXTURE
+    in vec2 a_uv0;
+  #endif
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+      v_uv0 = a_uv0;
+    #endif
+
+    v_color = a_color;
+
+    v_uv0 = a_texCoord;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  #include <builtin/uniforms/cc-global>
+
+  in vec4 v_color;
+
+  #if USE_TEXTURE
+    in vec2 v_uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  uniform MXD {
+    vec4 colorLeft;
+    vec4 colorRight;
+    vec4 color1;
+    vec4 color2;
+    vec4 color3;
+    float u_time;
+  };
+
+  float drawGird(vec2 p) {
+    if (p.x > 0. && p.x < 0.01) {
+      return 1.;
+    }
+    if (p.x > 0.99 && p.x < 1.) {
+      return 1.;
+    }
+    if (p.y > 0. && p.y < 0.01) {
+      return 1.;
+    }
+    if (p.y > 0.99 && p.y < 1.) {
+      return 1.;
+    }
+    return 0.;
+  }
+
+  float hashOld12(vec2 p) {
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+  }
+
+  float drawLayer1(float scale, vec2 uv) {
+    float co = 0.;
+    vec2 uv1 = uv;
+    uv1 *= scale;
+
+    vec2 hvtemp = floor(uv1);
+    
+    float n = hashOld12(vec2(hvtemp.y));
+    uv1.x += n;
+
+    // floor向下取整，计算出格子所在下标，
+    // 10*10的格子，如果uv是 0.2345,0.2345,uv1就是2.345,2.345
+    // 取整后 即为该uv所在格子下表，2,2
+    // 0.2 <= uv < 0.3 该范围内所有uv坐标，处理后hv均为 2,2
+    vec2 hv = floor(uv1);
+
+    // fr是 fract对数字取小数部分， 0.2345,0.2345 -> uv1 2.345,2.345 -> 0.345,0.345    
+    // 如 0.2 <= uv < 0.3 处理后就是一个范围 0-1的范围
+    vec2 fr = fract(uv1);
+
+    // 画圆，用fr（即格内坐标）和 0.5,0.5的点的距离作为颜色值,circle范围0-0.5
+    float circle = distance(fr,vec2(.5));
+    
+    // 用hv引入随机的半径 因为一格内hv相同，随机值结果也就是半径值相等
+    float radius = hashOld12(hv); // 半径
+    // 亮度 用这个初始随机值做亮度用
+    float strength = radius;
+    // radius 0-1 映射到 0.1-0.4的范围
+    radius = radius * 0.3 + 0.1;
+    // 半径*10取整，对2取余，舍弃一半的圆
+    float f1 = mod(floor(radius * 10.),2.);
+    radius *= f1;
+
+    // circle = step(radius,circle);
+    // 这个系数和strength乘的系数调整个不同的值，组合起来效果也大不一样。
+    circle = smoothstep(radius - .02 * scale,radius,circle);
+    
+    // 1. - circle 翻转色值，使距离圆心越近颜色越亮
+    circle = 1. - circle;
+
+    // 让层亮度和格子大小成正比比例 （scale是uv的缩放数，越大 格子就越小）
+    // 效果1
+    strength *= 1. / scale * 9.;
+    // 效果2
+    // strength *= sin(cc_time.x) + 1.;
+
+    circle *= strength;
+    
+    co += circle;
+    // co += drawGird(fr);
+    return co;
+  }
+
+  vec4 frag() {
+    vec2 uv = vec2(v_uv0.x, v_uv0.y);
+    vec3 co = vec3(0.);
+		vec4 o = vec4(0.);
+
+    // 加个背景色
+    co += mix(colorLeft, colorRight, uv.y).xyz;
+
+    vec4 colors[3];
+    colors[0] = color1;
+    colors[1] = color2;
+    colors[2] = color3;
+
+    for (int i = 0; i < 3; i++) {
+      float idx = float(i);
+      // 用循环下表做一个递增的层半径
+      float p1 = idx * 5. + 3.;
+
+      // 给每一层做一个随机运动方向 也就是一个速度向量
+      vec2 uvoff = vec2(hashOld12(vec2(p1)), hashOld12(vec2(p1 * 10.0)));
+      // 速度*时间 = 偏移距离 让该层随时间运动
+      uvoff = uvoff * u_time * .1;
+      
+      vec2 p2 = vec2(uv.x, uv.y) + uvoff;
+
+      // p1 半径， p2 供计算的uv值
+      float layer = drawLayer1(p1, p2);
+      
+      co += layer * colors[i].xyz;
+    }
+
+    o = vec4(co, 1.);
+    
+    return o;
+  }
+}%

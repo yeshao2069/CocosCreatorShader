@@ -1,0 +1,140 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+
+        ## 自定义参数
+        tt: { value: 0.0 }
+        resolution: { value: [960, 640], editor: { tooltip: "分辨率"}}
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 v_color;
+  out vec2 v_uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    v_uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(v_uv0);
+    #endif
+    v_color = a_color;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  #include <builtin/uniforms/cc-global>
+
+  in vec4 v_color;
+
+  #if USE_TEXTURE
+    in vec2 v_uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  uniform MXD {
+    vec2 resolution;
+    float tt;
+  };
+  uniform sampler2D noiseTexture;
+
+  #pragma define PI 3.1415
+  #pragma define S(x,y,z) smoothstep(x,y,z)
+  #pragma define B(x,y,z,b) smoothstep(x, x+b, z) * smoothstep(y+b, y, z)
+  #pragma define saturate(x) clamp(x,0.,1.)
+  #pragma define MOD3 vec3(.1031,.11369,.13787)
+  #pragma define MOONPOS vec2(1, .8)
+
+  float fbm(vec2 p) {
+    return  0.5000 * texture(cc_spriteTexture, p * 1.00).x +
+            0.2500 * texture(cc_spriteTexture, p * 2.02).x +
+            0.1250 * texture(cc_spriteTexture, p * 4.03).x +
+            0.0625 * texture(cc_spriteTexture, p * 8.04).x;
+  }
+
+  //  1 out, 2 in...
+  float hash(vec2 p) {
+      vec3 p3  = fract(vec3(p.xyx) * MOD3);
+      p3 += dot(p3, p3.yzx + 19.19);
+      return fract((p3.x + p3.y) * p3.z);
+  }
+
+
+  vec4 frag () {
+      vec4 o = vec4(0, 0, 0, 1);
+
+      vec3 col = vec3(.1, .15, .2);
+      // draw star
+      float alpha = pow(hash(v_uv0 * 10000.), 20.) * pow(hash(v_uv0 * 11111.), 20.);
+      float twinkle = (1. + sin(tt * 2.5 + (hash(v_uv0 * 35785.) * hash(v_uv0 * 24586.)) * 314.23)) / 2.;
+      col += alpha * twinkle;
+
+      // draw moon 
+      vec2 uv = v_uv0;
+      uv.x *=  960. / 640.;
+      uv.y -= 1.;
+
+      float t = cc_time.x - floor(cc_time.x / 60.) * 60.;
+      vec2 p = (2. * uv) / 640.;
+          
+      float f = fbm(0.002 * vec2(p.x, 1.0) / p.y);
+      float dx = (sin(t / 120.) / .3);
+      float dy = dx * 640. / 960.;
+      uv.x -= dx;
+      uv.y += dy;
+
+      float d = length(uv);
+      vec3 moon = vec3(0.98, 0.97, 0.95);
+      col += 0.7 * moon * exp(-4.0 * d) * vec3(1.1, 1.0, 0.8);
+      col = mix( col, moon, 1.0-smoothstep(0.1, 0.110, d));
+      
+      o = vec4(col, 1.);
+      return o;
+    }
+}%

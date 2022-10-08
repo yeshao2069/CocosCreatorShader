@@ -1,0 +1,91 @@
+// Effect Syntax Guide: https://github.com/cocos-creator/docs-3d/blob/master/zh/material-system/effect-syntax.md
+
+CCEffect %{
+  techniques:
+  - name: opaque
+    passes:
+    - vert: legacy/main-functions/general-vs:vert # builtin header
+      frag: unlit-fs:frag
+      properties: &props
+        mainTexture:    { value: white }
+        detailTexture:    { value: black }
+        method: { value: 0.0, target: params.x }
+        cells: { value: [1.0,1.0], target: params.yz }
+        fps: { value: 12.0, target: params.w }
+        mainColor:      { value: [1, 1, 1, 1], editor: { type: color } }
+  - name: transparent
+    passes:
+    - vert: legacy/main-functions/general-vs:vert # builtin header
+      frag: unlit-fs:frag
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendSrcAlpha: src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      properties: *props
+}%
+
+CCProgram unlit-fs %{
+  precision highp float;
+  #include <legacy/output>
+  #include <legacy/fog-fs>
+
+  in vec2 v_uv;
+  in vec3 v_position;
+
+  uniform sampler2D mainTexture;
+  uniform sampler2D detailTexture;
+
+  uniform Constant {
+    vec4 mainColor;
+    vec4 params;
+  };
+
+  vec4 frag () {
+    int method = int(params.x);
+    vec2 cells = params.yz;
+    float fps = params.w;
+
+    float index = floor(cc_time.x * fps);
+    float row = cells.x;
+    float col = cells.y;
+    vec2 offset = vec2(mod(index,col)/col,floor(index/col)/row);
+    vec2 animUV = v_uv / cells.yx + offset;
+
+    vec4 baseColor = mainColor * texture(mainTexture, v_uv);
+    vec4 detailColor = texture(detailTexture,animUV);
+
+    if(method == 0){
+      // 直接相加
+      baseColor.rgb += detailColor.rgb;
+    }
+    else if(method == 1){
+      // 直接相乘
+      baseColor.rgb *= detailColor.rgb;
+    }
+    else if(method == 2){
+      // 插值混合
+      baseColor.rgb = mix(baseColor.rgb,detailColor.rgb,0.618);
+    }
+    else if(method == 3){
+      // 加权求和
+      baseColor.rgb = baseColor.rgb * 0.2 + detailColor.rgb * 1.2;
+    }
+    else if(method == 4){
+      // 灰度混合
+      float dr = detailColor.r;
+      float dg = detailColor.g;
+      float db = detailColor.b;
+      float gray = dr * 0.299 + dg * 0.587 + db * 0.114;
+      baseColor.rgb = mix(baseColor.rgb, detailColor.rgb * 1.5, gray);
+    }
+    else if(method == 5){
+      //相减
+      baseColor.rgb = baseColor.rgb - detailColor.rgb;
+    }
+    CC_APPLY_FOG(baseColor, v_position);
+    return CCFragOutput(baseColor);
+  }
+}%

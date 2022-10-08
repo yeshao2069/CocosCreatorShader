@@ -1,0 +1,180 @@
+// Effect Syntax Guide: https://docs.cocos.com/creator/manual/zh/shader/index.html
+
+CCEffect %{
+  techniques:
+  - passes:
+    - name: shadow
+      vert: shadow-vs:vert
+      frag: shadow-fs:frag
+      rasterizerState:
+        cullMode: none
+      blendState:
+        targets:
+          - blend: true
+            blendSrc: src_alpha
+            blendDst: one_minus_src_alpha
+            blendSrcAlpha: src_alpha
+            blendDstAlpha: one_minus_src_alpha
+      properties: &props
+          _color:      { value: [0, 0, 0, 1], editor: { type: color } }
+    - name: normal
+      vert: vs:vert
+      frag: fs:frag
+      rasterizerState:
+        cullMode: none
+      blendState:
+        targets:
+          - blend: true
+            blendSrc: src_alpha
+            blendDst: one_minus_src_alpha
+            blendSrcAlpha: src_alpha
+            blendDstAlpha: one_minus_src_alpha
+      properties: *props
+}%
+
+
+
+CCProgram shadow-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 i_color;
+  out vec2 i_uv;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    i_uv = a_texCoord;
+
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(i_uv);
+    #endif
+    i_color = a_color;
+
+    pos.x += 0.1;
+    pos.y += 0.1;
+    pos.z += 0.01;
+    return pos;
+  }
+
+}%
+
+//阴影渲染
+CCProgram shadow-fs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  
+  #if USE_TEXTURE  
+    #include <builtin/internal/sprite-texture>
+  #endif
+
+  in vec4 i_color;
+  in vec2 i_uv;
+
+  uniform Constant {
+    vec4 _color;
+  };
+
+  vec4 frag () {
+    vec4 color = vec4(1.0);
+      #if USE_TEXTURE  
+          color *= texture(cc_spriteTexture, i_uv);
+          if(color.w >= 0.5) {
+              color.r = 0.0;
+              color.g = 0.0;
+              color.b = 0.0;
+              color.w = 0.5;
+          }
+      #endif
+    return color;
+  }
+}%
+
+
+CCProgram vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 i_color;
+  out vec2 i_uv;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    i_uv = a_texCoord;
+
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(i_uv);
+    #endif
+    i_color = a_color;
+    return pos;
+  }
+}%
+
+
+// 阴影渲染
+CCProgram fs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  
+  #if USE_TEXTURE  
+    #include <builtin/internal/sprite-texture>
+  #endif
+
+  in vec4 i_color;
+  in vec2 i_uv;
+
+  uniform Constant {
+    vec4 _color;
+  };
+
+  vec4 frag () {
+    vec4 color = vec4(1.0,1.0,1.0,1.0);
+    #if USE_TEXTURE  
+        color = texture(cc_spriteTexture, i_uv);
+    #endif
+    return color;
+  }
+}%

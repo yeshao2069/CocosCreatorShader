@@ -1,0 +1,133 @@
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 v_color;
+  out vec2 v_uv0;
+  out vec4 v_thisPos;
+
+  #if USE_TEXTURE
+    in vec2 a_uv0;
+  #endif
+
+  uniform PointData {
+    vec2 firstPos;
+    vec2 secondPos;
+  };
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+    v_thisPos = vec4(pos);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+      v_uv0 = a_uv0;
+    #endif
+
+    v_color = a_color;
+    v_uv0 = a_texCoord;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+
+  in vec4 v_color;
+  in vec4 v_thisPos;
+
+  #if USE_TEXTURE
+    in vec2 v_uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  uniform PointData {
+    vec2 firstPos;
+    vec2 secondPos;
+  };
+
+  // 可以根据两个点来判断是否隐藏坐标
+  bool isHide(){
+    // 如果是左右横向搓牌的情况下
+    if (secondPos.y == firstPos.y) {
+      float xw = (secondPos.x - firstPos.x) * 0.5;
+      if (xw > 0.0 && v_thisPos.x < xw + firstPos.x) {
+        return true;
+      } else if (xw < 0.0 && v_thisPos.x > xw + firstPos.x) {
+        return true;
+      }
+    }
+    // 用直线方程判断点的位置是在y轴的上方还是下方
+    float k = (secondPos.y - firstPos.y) / (secondPos.x - firstPos.x);
+    k = -1.0 / k;
+    float b = (firstPos.y + (secondPos.y - firstPos.y) * 0.5) - k * (firstPos.x + (secondPos.x - firstPos.x) * 0.5);
+    float y = k * v_thisPos.x + b;
+    //从上往下
+    if (secondPos.y < firstPos.y && v_thisPos.y > y) {
+      return true;
+    } else if (secondPos.y > firstPos.y && v_thisPos.y < y) {    //从下往上
+      return true;
+    }
+    return false;
+  }
+
+  vec4 frag () {
+    vec4 o = vec4(1, 1, 1, 1);
+    
+    #if USE_TEXTURE
+      o *= CCSampleWithAlphaSeparated(cc_spriteTexture, v_uv0);
+    #endif
+
+    o *= v_color;
+
+    ALPHA_TEST(o);
+
+    if (isHide()) {
+      o.a = 0.0;
+    }
+
+    return o;
+  }
+}%

@@ -1,0 +1,129 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+        blendValue: { value: 0.0, editor: { range:[0, 1, 0.1], slide: true } }
+        hight: { value: 6.0 }
+        sliceAngle: { value: 0.0 }
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 color;
+  out vec2 uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(uv0);
+    #endif
+    color = a_color;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  #include <builtin/uniforms/cc-global>
+
+  in vec4 color;
+
+  #if USE_TEXTURE
+    in vec2 uv0;
+    uniform Constants{
+      float blendValue;
+      float hight;
+      float sliceAngle;
+    };
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+  // https://www.khronos.org/registry/OpenGL/specs/es/2.0/GLSL_ES_Specification_1.00.pdf#page=59&zoom=100,153,377
+  vec2 rotateUV(vec2 srcUV, float radian);
+
+  vec4 frag () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+      float radio = cc_screenScale.y / cc_screenScale.x;
+      vec2 v_uv = uv0;
+      v_uv.y *= radio;
+      vec2 center = vec2(0.5, 0.5 * radio);
+      // vec2 newUV = center + rotateUV(v_uv - center, sliceAngle);
+      v_uv = center + rotateUV(v_uv - center, sliceAngle);
+      // The pixel to the right is the value 0, otherwise it is 1.
+      float xx = step(0.0,fract(v_uv.y * hight) * 2.0 - 1.0);
+
+      #if SAMPLE_FROM_RT
+        xx = 1.0 - xx;
+      #endif
+      if(xx > 0.0){
+        // turn left
+        v_uv.x -= blendValue;
+      }else{
+        // turn right
+        v_uv.x += blendValue;
+      }
+
+      o = CCSampleWithAlphaSeparated(cc_spriteTexture,v_uv);
+
+      if(xx > 0.0){
+        o.a = step(blendValue,uv0.x);
+      }else{
+        o.a = step(blendValue,1.0-uv0.x);
+      }
+    #endif
+
+    o *= color;
+    ALPHA_TEST(o);
+    return o;
+  }
+
+  vec2 rotateUV(vec2 srcUV, float radian){
+    mat2 a = mat2(cos(radian), -sin(radian), sin(radian), cos(radian));
+    return srcUV * a;
+  }
+}%

@@ -1,0 +1,219 @@
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 v_color;
+  out vec2 v_uv0;
+
+  #if USE_TEXTURE
+    in vec2 a_uv0;
+  #endif
+
+  uniform PointData {
+    vec4 xlist;
+    vec4 ylist;
+    vec4 xlistSymmetricPos;
+    vec4 ylistSymmetricPos;
+    vec2 disX;
+    vec2 disY;
+    vec2 disYSymmetricPos;
+    vec2 disXSymmetricPos;
+    vec2 worldPos;
+    float sprWidth;
+    float sprHeight;
+    float worldSprWidth;
+    float worldSprHeight;
+  };
+
+  vec2 getSymmetricPos(vec2 sp,vec2 pos1, vec2 pos2) {
+    float disX = pos2.x - pos1.x;
+    float disY = pos2.y - pos1.y;
+    if (disX == 0.0) {
+        float x = pos1.x - sp.x;
+        return vec2(pos1.x + x,sp.y);
+    }
+    //获取截线斜率
+    float k1 = disY / disX;
+
+    //设对称点坐标
+    // var x = 0;
+    // var y = 0;
+    //直线方程式
+    //y = k(x-x1) + y1
+    //方程式
+    //(y - sp.y)/(x - sp.x) = -1/k1; 方程式(1)
+    //(y+sp.y)/2 = k1*((x + sp.x)/2 - pos1.x) + pos1.y;方程式(2)
+
+    //由方程式(1)得
+    //x = (y - sp.y)/(-1/k1)+sp.x
+    //x = sp.y*k1 - y*k1 + sp.x
+    //由方程式(2)得
+    //y = k1*x + k1*sp.x - k1*pos1.x*2 + pos1.y*2 - sp.y;
+    //方程式(1)带入(2)得
+    //y = k1*( sp.y*k1 - y*k1 + sp.x ) + k1*sp.x - k1*pos1.x*2 + pos1.y*2 - sp.y;
+    //y = sp.y*k1*k1 - y*k1*k1 + sp.x*k1 + k1*sp.x - k1*pos1.x*2 + pos1.y*2 - sp.y;
+
+    float y = (sp.y * k1 * k1  + sp.x * k1 + k1 * sp.x - k1 * pos1.x * 2.0 + pos1.y * 2.0 - sp.y) / (1.0 + k1 * k1);
+    float x = (y - sp.y) / (-1.0 / k1) + sp.x;
+
+    return vec2(x,y);
+}
+
+  vec4 vert () {
+    vec2 pos1 = vec2(0.0,0.0);
+    vec2 pos2 = vec2(0.0,0.0);
+
+    if (disXSymmetricPos[0] != 0.0 || disXSymmetricPos[1] != 0.0) {
+        if (disXSymmetricPos[0] == 0.0) {
+            pos1 = vec2(disXSymmetricPos[1] + worldPos.x,worldPos.y);
+            pos2 = vec2(disXSymmetricPos[1] + worldPos.x,worldPos.y+worldSprHeight);
+        } else {
+            pos1 = vec2(disXSymmetricPos[0] + worldPos.x,worldPos.y);
+            pos2 = vec2(disXSymmetricPos[0] + worldPos.x,worldPos.y+worldSprHeight);
+        }
+    } else if (disYSymmetricPos[0] != 0.0 || disYSymmetricPos[1] != 0.0) {
+        if (disYSymmetricPos[0] == 0.0) {
+            pos1 = vec2(worldPos.x,(worldSprHeight - disYSymmetricPos[1]) + worldPos.y);
+            pos2 = vec2(worldPos.x + worldSprWidth, (worldSprHeight - disYSymmetricPos[1]) + worldPos.y);
+        } else {
+            pos1 = vec2(worldPos.x, (worldSprHeight - disYSymmetricPos[0]) + worldPos.y);
+            pos2 = vec2(worldPos.x + worldSprWidth, (worldSprHeight - disYSymmetricPos[0]) + worldPos.y);
+        }
+    }
+    else if (xlistSymmetricPos.x != 0.0 || xlistSymmetricPos.y != 0.0 || xlistSymmetricPos.z != 0.0) {
+        pos1 = vec2(xlistSymmetricPos.y+worldPos.x,worldSprHeight - ylistSymmetricPos.y + worldPos.y);
+        pos2 = vec2(xlistSymmetricPos.z+worldPos.x,worldSprHeight - ylistSymmetricPos.z + worldPos.y);
+    }
+
+    vec2 sp = vec2(a_position.x, a_position.y);
+    vec2 symmetricPos = getSymmetricPos(sp, pos1, pos2);
+    vec4 tmp_pos = vec4(a_position.x, a_position.y,a_position.z, 1.0);
+    tmp_pos.x = symmetricPos.x ;
+    tmp_pos.y = symmetricPos.y ;
+
+    vec4 pos = tmp_pos;
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+      v_uv0 = a_uv0;
+    #endif
+
+    v_color = a_color;
+    v_uv0 = a_texCoord;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+
+  in vec4 v_color;
+
+  #if USE_TEXTURE
+    in vec2 v_uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  uniform PointData {
+    vec4 xlist;
+    vec4 ylist;
+    vec4 xlistSymmetricPos;
+    vec4 ylistSymmetricPos;
+    vec2 disX;
+    vec2 disY;
+    vec2 disYSymmetricPos;
+    vec2 disXSymmetricPos;
+    vec2 worldPos;
+    float sprWidth;
+    float sprHeight;
+    float worldSprWidth;
+    float worldSprHeight;
+  };
+
+  bool isHide(float px , float py) {
+    bool b = false;
+    float dx = px * sprWidth;
+    float dy = py * sprHeight;
+    if (disX[0] != 0.0 || disX[1] != 0.0) {
+        if (dx >= disX[0] && dx <= disX[1]) {
+            return true;
+        }
+    } else if (disY[0] != 0.0 || disY[1] != 0.0) {
+        if (dy >= disY[0] && dy <= disY[1]) {
+            return true;
+        }
+    }
+    
+    if (((ylist[0] >= dy) != (ylist[2] >= dy)) && (dx < (xlist[2] - xlist[0]) * (dy - ylist[0]) / (ylist[2] - ylist[0]) + xlist[0])) {
+       b = !b;
+    }
+    if (((ylist[1] >= dy) != (ylist[0] >= dy)) && (dx < (xlist[0] - xlist[1]) * (dy - ylist[1]) / (ylist[0] - ylist[1]) + xlist[1])) {
+       b = !b;
+    }
+    if (((ylist[2] >= dy) != (ylist[1] >= dy)) && (dx < (xlist[1] - xlist[2]) * (dy - ylist[2]) / (ylist[1] - ylist[2]) + xlist[2])) {
+       b = !b;
+    }
+    return b;
+  }
+
+  vec4 frag () {
+    vec4 o = vec4(1, 1, 1, 1);
+    
+    #if USE_TEXTURE
+      o *= CCSampleWithAlphaSeparated(cc_spriteTexture, v_uv0);
+    #endif
+
+    o *= v_color;
+
+    ALPHA_TEST(o);
+
+    bool hide = isHide(v_uv0.x, v_uv0.y);
+    if (!hide) {
+      o.a = 0.0;
+    }
+
+    return o;
+  }
+}%

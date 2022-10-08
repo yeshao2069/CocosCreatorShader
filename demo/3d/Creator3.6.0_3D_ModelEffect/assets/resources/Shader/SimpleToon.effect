@@ -1,0 +1,263 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+
+CCEffect %{
+  techniques:
+  - passes:
+    - switch: USE_OUTLINE_PASS
+      vert: legacy/main-functions/outline-vs:vert
+      frag: legacy/main-functions/outline-fs:frag
+      rasterizerState:
+        cullMode: front
+      depthStencilState:
+        depthFunc: less_equal
+        depthTest: true
+        depthWrite: true
+      properties:
+        lineWidth:     { value: 10, target: outlineParams.x }
+        depthBias:     { value: 0,  target: outlineParams.y }
+        baseColor:  { editor: { type: color } }
+        baseColorMap:  { value: grey }
+    - vert: toon-vs:vert
+      frag: toon-fs:frag
+      properties: &props
+        mainTexture:    { value: white, target: baseColorMap, editor: { displayName: BaseColorMap } }
+        grayColor:       { value: [0.2126, 0.7152, 0.0722, 0.0], editor: { parent: USE_GRAYCOLOR,displayName: gray Color, type: color } }
+        tilingOffset:   { value: [1.0, 1.0, 0.0, 0.0] }
+        mainColor:      { value: [0.9, 0.9, 0.9, 1.0], target: mainColor, editor: { displayName: main Color, type: color } }
+        rimLightColor: { value: [1.0, 1.0, 1.0, 0.5], target: rimColor, editor: { parent: USE_RIM_LIGHT,displayName: rim Color, type: color } }
+        emissive:       { value: [0.0, 0.0, 0.0, 1.0], editor: { parent: USE_EMISSIVE,displayName: emissive Color, type: color } }
+    - vert: shadow-caster-vs:vert
+      frag: shadow-caster-fs:frag
+      phase: shadow-caster
+      propertyIndex: 1
+      rasterizerState:
+        cullMode: front
+      properties:
+        mainTexture:    { value: white, target: baseColorMap, editor: { displayName: BaseColorMap } }
+        grayColor:       { value: [0.2126, 0.7152, 0.0722, 0.0], editor: { parent: USE_GRAYCOLOR,displayName: gray Color, type: color } }
+        tilingOffset:   { value: [1.0, 1.0, 0.0, 0.0] }
+        mainColor:      { value: [0.9, 0.9, 0.9, 1.0], target: mainColor, editor: { displayName: main Color, type: color } }
+        rimLightColor: { value: [1.0, 1.0, 1.0, 0.5], target: rimColor, editor: { parent: USE_RIM_LIGHT,displayName: rim Color, type: color } }
+        emissive:       { value: [0.0, 0.0, 0.0, 1.0], editor: { parent: USE_EMISSIVE,displayName: emissive Color, type: color } }
+}%
+
+CCProgram shared-ubos %{
+  uniform Constants {
+    vec4 grayColor;
+    vec4 tilingOffset;
+    vec4 mainColor;
+    vec4 emissive;
+    vec4 rimColor;
+  };
+}%
+
+CCProgram Outline-vs %{
+  precision highp float;
+  #include <legacy/input-standard>
+  #include <builtin/uniforms/cc-global>
+  #include <legacy/decode-base>
+  #include <legacy/local-batch>
+  out vec2 v_uv;
+  
+  
+  uniform OutlineVert {
+  vec4 outlineParams; // x: line width, y: depth hack
+  };
+
+  vec4 vert () {
+  StandardVertInput In;
+  CCVertInput(In);
+
+  mat4 matWorld;
+  CCGetWorldMatrix(matWorld);
+
+  float width = outlineParams.x * 0.001;
+ 
+  #if USE_POSITION_SCALING
+    vec3 dir = normalize(In.position.xyz);
+    float flip = dot(dir, normalize(In.normal)) < 0.0 ? -1.0 : 1.0;
+    In.position.xyz += flip * dir * width * 2.0;
+    vec4 pos = cc_matProj * (cc_matView * matWorld) * In.position;
+  #else
+    In.position.xyz += normalize(In.normal) * width;
+    vec4 pos = cc_matProj * (cc_matView * matWorld) * In.position;
+  #endif
+
+  pos.z -= outlineParams.y * 0.002;
+
+  v_uv = a_texCoord;
+
+  return pos;
+ }
+}%
+
+CCProgram Outline-fs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #include <legacy/output>
+  in vec2 v_uv;
+  uniform OutlineFrag {
+    vec4 baseColor;
+  };
+
+
+vec4 frag () 
+  {
+    vec4 color = baseColor;
+
+    return CCFragOutput(color);
+  }
+
+}%
+
+CCProgram toon-vs %{
+  precision highp float;
+  #include <legacy/input-standard>
+  #include <builtin/uniforms/cc-global>
+  #include <legacy/decode-base>
+  #include <legacy/local-batch>
+  #include <shared-ubos>
+
+  out vec3 v_position;
+  out vec2 v_uv;
+  out vec3 v_normal;
+  #if USE_RIM_LIGHT
+      out vec3 v_view_normal;
+  #endif    
+
+  vec4 vert () {
+    StandardVertInput In;
+    CCVertInput(In);
+    mat4 matWorld, matWorldIT;
+    CCGetWorldMatrixFull(matWorld, matWorldIT);
+
+    vec4 pos = matWorld * In.position;
+    v_position = pos.xyz;
+    v_uv = a_texCoord * tilingOffset.xy + tilingOffset.zw;
+ 
+    vec4 normal = vec4(In.normal,0.0);
+    v_normal = (matWorldIT * normal).xyz;
+    #if USE_RIM_LIGHT
+        v_view_normal = normalize(((cc_matView * matWorldIT) * normal).xyz);
+    #endif    
+
+    return cc_matProj * (cc_matView * matWorld) * In.position;
+  }
+}%
+
+CCProgram toon-fs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #include <shared-ubos>
+  #include <legacy/output-standard>
+
+  in vec3 v_position;
+  in vec2 v_uv;
+
+  #if USE_RIM_LIGHT
+      in vec3 v_view_normal;
+  #endif  
+
+  #if USE_BASE_COLOR_MAP
+    uniform sampler2D baseColorMap;
+  #endif
+  in vec3 v_normal;
+
+
+  vec4 frag () {
+    vec4 color = mainColor;
+
+    #if USE_BASE_COLOR_MAP
+      vec4 baseColorMap = texture(baseColorMap, v_uv);
+      baseColorMap.rgb = SRGBToLinear(baseColorMap.rgb);
+      color *= baseColorMap;
+    #endif
+
+    #if USE_EMISSIVE
+    color.rgb += emissive.rgb;
+    #endif 
+
+    #if USE_GRAYCOLOR
+       if (grayColor.w > 0.0) {
+          float gray  = grayColor.r * color.r + grayColor.g * color.g + grayColor.b * color.b;
+          color.r = color.g = color.b = gray;
+       }
+    #endif       
+
+    #if USE_RIM_LIGHT
+        float fRim = (1.0 - dot(v_view_normal,vec3(0,0,1.0))) * rimColor.w;
+        color.rgb = mix(color.rgb,rimColor.rgb,fRim);
+    #endif   
+
+    return CCFragOutput(color);
+  }
+}%
+CCProgram shadow-caster-vs %{
+  precision highp float;
+  #include <legacy/input-standard>
+  #include <legacy/decode-base>
+  #include <legacy/local-batch>
+  #include <shared-ubos>
+  #include <builtin/uniforms/cc-shadow>
+#if CC_SUPPORT_CASCADED_SHADOW_MAP
+  #include <builtin/uniforms/cc-csm>
+#endif
+
+  out vec2 v_uv;
+  out vec4 v_worldPos;
+  out float v_clip_depth;
+
+  vec4 vert () {
+    StandardVertInput In;
+    CCVertInput(In);
+
+    mat4 matWorld, matWorldIT;
+    CCGetWorldMatrixFull(matWorld, matWorldIT);
+
+    v_worldPos = matWorld * In.position;
+    vec4 clipPos = cc_matLightViewProj * v_worldPos;
+    v_clip_depth = clipPos.z / clipPos.w * 0.5 + 0.5;
+
+    v_uv = a_texCoord * tilingOffset.xy + tilingOffset.zw;
+
+    return clipPos;
+  }
+}%
+
+CCProgram shadow-caster-fs %{
+  precision highp float;
+  #include <shared-ubos>
+  #include <common/data/packing>
+  #include <legacy/shadow-map-base>
+  
+  in vec2 v_uv;
+  in vec4 v_worldPos;
+  in float v_clip_depth;
+
+  #if USE_BASE_COLOR_MAP
+    uniform sampler2D baseColorMap;
+  #endif
+
+
+  vec4 frag () {
+    vec4 baseColor = mainColor;
+    #if USE_BASE_COLOR_MAP
+      baseColor *= texture(baseColorMap, v_uv);
+    #endif
+
+
+    // spot use linear
+    if(cc_shadowLPNNInfo.x > 0.000001 && cc_shadowLPNNInfo.x < 1.999999) {
+      // enabled linear depth
+      if (cc_shadowNFLSInfo.z > 0.000001) {
+        return vec4(CCGetLinearDepth(v_worldPos.xyz), 1.0, 1.0, 1.0);
+      }
+    }
+
+    if (cc_shadowLPNNInfo.y > 0.000001) {
+      return packDepthToRGBA(v_clip_depth);
+    }
+  
+    return vec4(v_clip_depth, 1.0, 1.0, 1.0);
+  }
+}%

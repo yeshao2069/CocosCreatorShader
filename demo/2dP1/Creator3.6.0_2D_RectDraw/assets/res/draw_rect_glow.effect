@@ -1,0 +1,379 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: vs:vert
+      frag: fs:frag
+      depathStencilState:
+        depthTest: false
+        depthWeite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+        u_texSize: { value: [1080, 2160] }
+        u_rect: { value: [800, 400] }
+        u_lp1: { value: [-400, 400] }
+        u_lp2: { value: [-400, -400] }
+        u_progress: { value: 1.0 }
+        ## 线宽
+        u_lineWidth: { value: 0.0030 }
+        ## 发光宽度
+        u_glowWidth: { value: 0.050 }
+        u_aaWidth: { value: 0.0005 }
+        ## 颜色
+        u_glowColor: { value: [1, 1, 1, 1], editor: { type: color } }
+}%
+
+
+CCProgram vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+
+  in vec3 a_position;
+  in vec4 a_color;
+  out vec4 v_color;
+
+  in vec2 a_texCoord;
+  out vec2 v_uv0;
+
+  vec4 vert() {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+      v_uv0 = a_texCoord;
+    #endif
+
+    v_color = a_color;
+
+    return pos;
+  }
+}%
+
+
+CCProgram fs %{
+  precision highp float;
+  
+  #include <builtin/internal/alpha-test>
+  #include <builtin/internal/embedded-alpha>
+
+  in vec4 v_color;
+
+  #if USE_TEXTURE
+    in vec2 v_uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  uniform POINTS {
+    vec2 u_texSize;
+    vec2 u_rect;
+    vec2 u_lp1;
+    vec2 u_lp2;
+    float u_progress;
+    float u_lineWidth;
+    float u_glowWidth;
+    float u_aaWidth;
+    vec4 u_glowColor;
+  };
+
+  float linear(float x0, float x1, float y0, float y1, float inputX) {
+      if (x0 == x1) return 0.0;
+      return (y1 - y0) * (inputX - x0) / (x1 - x0) + y0;
+  }
+
+  float t (float x) {
+    // return pow(x, 1.0/2.5);
+    // return x < 0.5 ?
+    //         4.0 * x * x * x :
+    //         1.0 - pow(-2.0 * x + 2.0, 3.0) / 2.0;
+    // return -(cos(3.1415926 * x) - 1.0) / 2.0;
+    return sin(x * 3.1415926 / 2.0);
+  }
+
+  float linearEx(float x0, float x1, float y0, float y1, float inputX) {
+      if (x0 == x1) return 0.0;
+      return (y1 - y0) * t((inputX - x0) / (x1 - x0)) + y0;
+  }
+
+  float pointToLineDistance(vec2 p, vec2 lp1, vec2 lp2) {
+    return abs((lp2.y - lp1.y)*p.x + (lp1.x-lp2.x) * p.y + lp2.x*lp1.y - lp2.y*lp1.x) / sqrt(pow(lp2.y-lp1.y, 2.0)+ pow(lp1.x-lp2.x, 2.0));
+  }
+
+  float pointToCircleDistance(vec2 p, vec2 o, float r) {
+    vec2 v = p - o;
+    return abs(length(v) - r);
+    // return length(v);
+  }
+
+  // 纠错 如果没有这个纠错，延长线上会出现亮点
+  float fixDistance(float d, vec2 p, vec2 lp1, vec2 lp2) {
+    if (lp1.x < lp2.x) {
+      if (p.x < lp1.x) {
+        if (d < lp1.x - p.x) d = lp1.x - p.x;
+      }
+      if (p.x > lp2.x) {
+        if (d < p.x - lp2.x) d = p.x - lp2.x;
+      }
+    } else {
+      if (p.x < lp2.x) {
+        if (d < lp2.x - p.x) d = lp2.x - p.x;
+      }
+      if (p.x > lp1.x) {
+        if (d < p.x - lp1.x) d = p.x - lp1.x;
+      }
+    }
+    if (lp1.y < lp2.y) {
+      if (p.y < lp1.y) {
+        if (d < lp1.y - p.y) d = lp1.y - p.y;
+      }
+      if (p.y > lp2.y) {
+        if (d < p.y - lp2.y) d = p.y - lp2.y;
+      }
+    } else {
+      if (p.y < lp2.y) {
+        if (d < (lp2.y - p.y)) d = lp2.y - p.y;
+      }
+      if (p.y > lp1.y) {
+        if (d < p.y - lp1.y) d = p.y - lp1.y;
+      }
+    }
+    return d;
+  }
+
+  float pointToSegmentDistance(vec2 p, vec2 lp1, vec2 lp2) {
+    float d = pointToLineDistance(p, lp1, lp2);
+    vec2 ax = p - lp1;
+    vec2 ab = lp2 - lp1;
+    vec2 bx = p - lp2;
+    vec2 ba = lp1 - lp2;
+    float pi = 3.1415926;
+    if (length(ax) * length(ab) > 0.0) {
+      if (acos((ax.x*ab.x+ax.y*ab.y) / (length(ax) * length(ab))) > pi / 2.0) {
+        d = sqrt(pow(lp1.x - p.x, 2.0) + pow(lp1.y - p.y, 2.0));
+      }
+      if (acos((bx.x*ba.x+bx.y*ba.y) / (length(bx) * length(ba))) > pi / 2.0) {
+        d = sqrt(pow(lp2.x - p.x, 2.0) + pow(lp2.y - p.y, 2.0));
+      }
+    }
+    return fixDistance(d, p, lp1, lp2);
+  }
+
+  float pointToArcDistance(vec2 p, vec2 o, float r, float rad1, float rad2) {
+    float pi = 3.1415926;
+    float d = 1.0;
+    vec2 v = p - o;
+    float rad = atan(-v.y, v.x);
+    vec2 r1p = vec2(o.x + cos(rad1) * r, o.y - sin(rad1) * r);
+    vec2 r2p = vec2(o.x + cos(rad2) * r, o.y - sin(rad2) * r);
+    // 此处简单处理，因为本次画的图形不需要在-180和180进行特殊处理
+    if (rad > rad1 || rad < rad2) {
+      d = min(length(p - r1p),length(p - r2p));
+    } else {
+      d = pointToCircleDistance(p, o, r);
+    }
+    return d;
+  }
+
+  vec2 standard(vec2 p) {
+    return vec2(linear(-u_texSize.x/2.0, u_texSize.x/2.0, 0.0, 1.0, p.x), linear(-u_texSize.y/2.0, u_texSize.y/2.0, 1.0, 0.0, p.y));
+  }
+
+  float standardX(float x) {
+    return linear(-u_texSize.x/2.0, u_texSize.x/2.0, 0.0, 1.0, x);
+  }
+
+  float standard(float l) {
+    return l / u_texSize.x;
+  }
+
+  vec4 drawLine(vec4 srcColor, vec2 p) {
+    vec4 color = vec4(srcColor);
+
+    // 开始计算锚点
+    float pi = 3.1415926;
+    float width = u_rect.x;
+    float height = u_rect.y;
+    float f = width / 2.0;
+    float al = 2.0 * f;
+    float r = (width - al) / 2.0;
+    float bl = height - r * 2.0;
+    float l = 2.0 * al + 2.0 * bl + 2.0 * pi * r;
+    float curl = l * u_progress;
+
+    float sr = standard(r);
+    float scurl = standard(curl);
+
+    vec2 o0 = standard(vec2(0.0, 0.0));
+    vec2 a0 = standard(vec2(al / 2.0, 0.0));
+    vec2 a1 = standard(vec2(al / 2.0 + r, -r));
+    vec2 b0 = standard(vec2(al / 2.0 + r, -r - bl));
+    vec2 b1 = standard(vec2(al / 2.0, -r * 2.0 - bl));
+    vec2 c0 = standard(vec2(-al / 2.0, -r * 2.0 - bl));
+    vec2 c1 = standard(vec2(-al / 2.0 - r, -r - bl));
+    vec2 d0 = standard(vec2(-al / 2.0 - r, -r));
+    vec2 d1 = standard(vec2(-al / 2.0, 0.0));
+
+    float d1l = al / 2.0;
+    float d0l = d1l + (pi * r / 2.0);
+    float c1l = d0l + (bl);
+    float c0l = c1l + (pi * r / 2.0);
+    float b1l = c0l + (al);
+    float b0l = b1l + (pi * r / 2.0);
+    float a1l = b0l + (bl);
+    float a0l = a1l + (pi * r / 2.0);
+
+    vec2 oa = standard(vec2(al / 2.0, -r));
+    vec2 ob = standard(vec2(al / 2.0, -r - bl));
+    vec2 oc = standard(vec2(-al / 2.0, -r - bl));
+    vec2 od = standard(vec2(-al / 2.0, -r));
+
+    // 这部分是完整的一个圆角矩形
+    // float d = 1.0;
+    // d = min(d, pointToSegmentDistance(p, o0, a0));
+    // d = min(d, pointToArcDistance(p, oa, sr, pi/2.0, 0.0));
+    // d = min(d, pointToSegmentDistance(p, a1, b0));
+    // d = min(d, pointToArcDistance(p, ob, sr, 0.0, -pi/2.0));
+    // d = min(d, pointToSegmentDistance(p, b1, c0));
+    // d = min(d, pointToArcDistance(p, oc, sr, -pi/2.0, -pi));
+    // d = min(d, pointToSegmentDistance(p, c1, d0));
+    // d = min(d, pointToArcDistance(p, od, sr, pi, pi/2.0));
+    // d = min(d, pointToSegmentDistance(p, d1, o0));
+
+    // 按进度画
+    float d = 2.0;
+    bool end = false;
+    if (!end && curl > d1l) {
+      d = min(d, pointToSegmentDistance(p, o0, d1));
+    } else {
+      d = min(d, pointToSegmentDistance(p, o0, vec2(linear(0.0, -al / 2.0, o0.x, d1.x, -curl), d1.y)));
+      end = true;
+    }
+    if (!end) {
+      if (curl > d0l) {
+        d = min(d, pointToArcDistance(p, od, sr, pi, pi/2.0));
+      } else {
+        float endRad = (curl - d1l) / (pi * r / 2.0) * (pi / 2.0) + pi / 2.0;
+        d = min(d, pointToArcDistance(p, od, sr, endRad, pi/2.0));
+        end = true;
+      }
+    }
+    if (!end) {
+      if (curl > c1l) {
+        d = min(d, pointToSegmentDistance(p, d0, c1));
+      } else {
+        float len = curl - d0l;
+        d = min(d, pointToSegmentDistance(p, d0, vec2(c1.x, linear(0.0, bl, d0.y, c1.y, len))));
+        end = true;
+      }
+    }
+    if (!end) {
+      if (curl > c0l) {
+        d = min(d, pointToArcDistance(p, oc, sr, -pi/2.0, -pi));
+      } else {
+        float endRad = -(curl - c1l) / (pi * r / 2.0) * (pi / 2.0) + pi;
+        d = min(d, pointToArcDistance(p, oc, sr,  -endRad, -pi));
+        end = true;
+      }
+    }
+    if (!end) {
+      if (curl > b1l) {
+        d = min(d, pointToSegmentDistance(p, c0, b1));
+      } else {
+        float len = curl - c0l;
+        d = min(d, pointToSegmentDistance(p, c0, vec2(linear(0.0, al, c0.x, b1.x, len), c0.y)));
+        end = true;
+      }
+    }
+    if (!end) {
+      if (curl > b0l) {
+        d = min(d, pointToArcDistance(p, ob, sr, 0.0, -pi/2.0));
+      } else {
+        float endRad = (curl - b1l) / (pi * r / 2.0) * (pi / 2.0) - pi / 2.0;
+        d = min(d, pointToArcDistance(p, ob, sr, endRad, -pi / 2.0));
+        end = true;
+      }
+    }
+    if (!end) {
+      if (curl > a1l) {
+        d = min(d, pointToSegmentDistance(p, b0, a1));
+      } else {
+        float len = curl - b0l;
+        d = min(d, pointToSegmentDistance(p, b0, vec2(b0.x, linear(0.0, bl, b0.y, a1.y, len))));
+        end = true;
+      }
+    }
+    if (!end) {
+      if (curl > a0l) {
+        d = min(d, pointToArcDistance(p, oa, sr, pi / 2.0, 0.0));
+      } else {
+        float endRad = (curl - a1l) / (pi * r / 2.0) * (pi / 2.0);
+        d = min(d, pointToArcDistance(p, oa, sr, endRad, 0.0));
+        end = true;
+      }
+    }
+    if (!end) {
+      if (curl >= l) {
+        d = min(d, pointToSegmentDistance(p, o0, a0));
+      } else {
+        float len = curl - a0l;
+        d = min(d, pointToSegmentDistance(p, a0, vec2(linear(0.0, al/2.0, a0.x, o0.x, len), a0.y)));
+      }
+    }
+
+    if (d < u_lineWidth - u_aaWidth) color.a = 1.0;
+    else if (d < u_lineWidth) {
+      color.r = linear(u_lineWidth - u_aaWidth, u_lineWidth, color.r, u_glowColor.r, d);
+      color.g = linear(u_lineWidth - u_aaWidth, u_lineWidth, color.g, u_glowColor.g, d);
+      color.b = linear(u_lineWidth - u_aaWidth, u_lineWidth, color.b, u_glowColor.b, d);
+      color.a = linear(u_lineWidth - u_aaWidth, u_lineWidth, 1.0, .52, d);
+    } else if (d < u_lineWidth + u_glowWidth) {
+      color.r = u_glowColor.r;
+      color.g = u_glowColor.g;
+      color.b = u_glowColor.b;
+      color.a = linearEx(u_lineWidth, u_lineWidth + u_glowWidth, 0.52, 0.0, d);
+    }
+    return color;
+  }
+
+  vec4 frag () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+      o *= CCSampleWithAlphaSeparated(cc_spriteTexture, v_uv0);
+    #endif
+
+    vec4 color = vec4(u_glowColor.r, u_glowColor.g, u_glowColor.b, 0.0);
+    vec2 p = v_uv0;
+    color = drawLine(color, p);
+
+    o *= color;
+    o.a *= v_color.a;
+
+    ALPHA_TEST(o);
+
+    return o;
+  }
+}%

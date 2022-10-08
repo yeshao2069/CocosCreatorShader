@@ -1,0 +1,83 @@
+// Effect Syntax Guide: https://github.com/cocos-creator/docs-3d/blob/master/zh/material-system/effect-syntax.md
+
+CCEffect %{
+  techniques:
+  - name: opaque
+    passes:
+    - vert: legacy/main-functions/general-vs:vert # builtin header
+      frag: unlit-fs:frag
+      properties: &props
+        mainTexture:    { value: white }
+        maskTexture:    { value: white }
+        detailTexture:    { value: white }
+        cubeTexture:    { value: white }
+        strenghten: { value: 0.05, target: parameters.x }
+        textureMoveSpeed: { value: [0.0,0.05], target: parameters.yz }
+        reflectionStrengthen: { value: 0.5, target: cubeParams.x }
+        reflectionDistortion: {value: 0.2, target: cubeParams.y }
+
+        mainColor:      { value: [1, 1, 1, 1], editor: { type: color } }
+  - name: transparent
+    passes:
+    - vert: legacy/main-functions/general-vs:vert # builtin header
+      frag: unlit-fs:frag
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendSrcAlpha: src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      properties: *props
+}%
+
+CCProgram unlit-fs %{
+  precision highp float;
+  #include <legacy/output>
+  #include <legacy/fog-fs>
+
+  in vec2 v_uv;
+  in vec3 v_position;
+  in vec3 v_normal;
+
+  uniform sampler2D mainTexture;
+  uniform sampler2D maskTexture;
+  uniform sampler2D detailTexture;
+  uniform samplerCube cubeTexture;
+
+  uniform Constant {
+    vec4 mainColor;
+    vec4 parameters;
+    vec4 cubeParams;
+  };
+
+  vec4 frag () {
+    float strenghten = parameters.x;
+    vec2 textureMoveSpeed = parameters.yz;
+
+    float reflectionStrengthen = cubeParams.x;
+    float reflectionDistortion = cubeParams.y;
+
+    vec2 uv = v_uv + cc_time.xx * textureMoveSpeed;
+    vec4 detailColor = texture(detailTexture,uv);
+
+    float gray = detailColor.r * 0.299 + detailColor.g * 0.587 + detailColor.b * 0.114;
+
+    vec3 offset = (detailColor.rgb - 0.5) * 2.0 * gray;
+
+    vec4 col = mainColor * texture(mainTexture, v_uv + offset.xy * strenghten);
+    col.rgb += detailColor.rgb;
+
+    //reflect    R = V - 2 * dot(N,V) * N;
+
+    vec3 V = normalize(v_position - cc_cameraPos.xyz);
+    vec3 N = normalize(v_normal - offset * reflectionDistortion);
+    vec3 R = V - 2.0 * dot(N,V) * N;
+    vec4 cubeColor = texture(cubeTexture,R);
+
+    vec4 mask = texture(maskTexture,v_uv);
+    col.rgb = mix(col.rgb,cubeColor.rgb,reflectionStrengthen * mask.r);
+    CC_APPLY_FOG(col, v_position);
+    return CCFragOutput(col);
+  }
+}%

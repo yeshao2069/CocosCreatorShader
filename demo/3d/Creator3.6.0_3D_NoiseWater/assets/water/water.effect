@@ -1,0 +1,57 @@
+// Effect Syntax Guide: https://github.com/cocos-creator/docs-3d/blob/master/zh/material-system/effect-syntax.md
+
+CCEffect %{
+  techniques:
+  - name: opaque
+    passes:
+    - vert: legacy/main-functions/general-vs:vert # builtin header
+      frag: unlit-fs:frag
+      properties: &props
+        mainTexture:    { value: white }
+        mainColor:      { value: [1, 1, 1, 1], editor: { type: color } }
+        noiseTexture:   { value: white }
+  - name: transparent
+    passes:
+    - vert: legacy/main-functions/general-vs:vert # builtin header
+      frag: unlit-fs:frag
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendSrcAlpha: src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      properties: *props
+}%
+
+CCProgram unlit-fs %{
+  precision highp float;
+  #include <legacy/output>
+  #include <legacy/fog-fs>
+  #include <builtin/uniforms/cc-global>
+
+  in vec2 v_uv;
+  in vec3 v_position;
+  uniform sampler2D mainTexture;
+  uniform sampler2D noiseTexture;
+  in float factor_fog;
+
+  uniform Constant {
+    vec4 mainColor;
+  };
+
+  vec4 frag () {
+    vec4 col = mainColor * texture(mainTexture, v_uv);
+    vec2 uv=v_uv;
+    uv.x += cc_time.x * 0.005;
+    uv.y += cc_time.x * 0.005;
+    vec4 noiseCol = texture(noiseTexture, uv);
+    if (noiseCol.r > 0.9) {  
+      col = vec4(1.0, 1.0, 1.0, 0.7);
+    } else {   
+       col.a = 0.6;
+    }
+    CC_APPLY_FOG(col, v_position.xyz);
+    return CCFragOutput(col);
+  }
+}%

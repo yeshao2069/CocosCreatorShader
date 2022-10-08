@@ -1,0 +1,100 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+        mainTex: { value: white }
+        mainTex2: {  value: white }
+}%
+
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+
+  in vec3 a_position;
+  in vec4 a_color;
+  in vec2 a_texCoord;
+
+  out vec4 v_color;
+  out vec2 v_uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    v_uv0 = a_texCoord;
+    v_color = a_color;
+
+    return pos;
+  }
+}%
+
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  #include <builtin/uniforms/cc-global>
+
+  in vec4 v_color;
+  in vec2 v_uv0;
+
+  uniform sampler2D mainTex;
+  uniform sampler2D mainTex2;
+
+  float random (vec2 st) {
+    return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
+  }
+
+  vec4 frag () {
+    vec3 color = vec3(0.);
+    float t = cc_time.x * 0.6;
+    vec2 off1 = texture(mainTex2, v_uv0 + t * vec2(.5,.1)).xy;
+    off1 *= .005;
+
+    color += texture(mainTex, off1 + v_uv0).xyz;
+    color *= smoothstep(-.5 ,1.3, v_uv0.y) - .3;
+
+    vec2 mouv = v_uv0;
+    mouv.y *= 20.;
+    float n3 = floor(mouv.y);
+    float n4 = random(vec2(n3, n3)) + .3;
+
+    vec2 baseuv = v_uv0;
+    vec2 scale = vec2(4., 3.);
+    baseuv = baseuv * scale;
+    baseuv.x += t * .1 * n4;
+    
+    float c1 = texture(mainTex2, baseuv).x;
+    c1 = smoothstep(0.23, 0., c1);
+    color += vec3(c1);
+    
+    return vec4(color, 1.);
+  }
+}%

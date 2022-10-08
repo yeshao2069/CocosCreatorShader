@@ -1,0 +1,108 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: kuang-vs:vert
+      frag: kuang-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties: 
+        kuangColorStrength  : { value : 3.0}   #//流光叠加颜色的强度  
+
+
+         
+}%
+
+CCProgram kuang-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif  
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 v_color;
+  out vec2 uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(uv0);
+    #endif
+    v_color = a_color;
+
+    return pos;
+  }
+}%
+
+
+
+CCProgram kuang-fs %{
+     precision highp float;
+     #include <builtin/internal/sprite-texture>
+     #include <builtin/uniforms/cc-global>
+     in vec4 v_color;
+
+ 
+
+
+     uniform ARGS{
+         vec4  kuangcolor;
+         float time;
+         float kuangColorStrength;
+
+     };
+
+     in vec2 uv0; 
+
+     vec4 frag () { 
+
+        vec4 color  = texture(cc_spriteTexture, uv0);      //采样精灵颜色  
+
+        vec2 dir =  normalize(vec2(1.,1.)-vec2(0.5,0.5));   //定义一个从uv中心点出发的向量   ,成为向量kuang
+
+
+        float angle =fract(cc_time.x*0.2)*6.28;     //  用cc_time ,来表现增加的弧度值 
+        dir = vec2(dir.x*cos(angle)-dir.y*sin(angle),dir.x*sin(angle)+dir.y*cos(angle)) ;   // 把上面的向量进行旋转 , 公式可参考向量旋转
+        vec2 uvFromCenter =  uv0-vec2(0.5,0.5);                // 使用uv0 来定义图上每一个uv点 和中心点所组成的向量  ,称为向量org
+        float dirColor = abs(dot( uvFromCenter,dir)); //点乘org和kuang向量 , 向量点乘含义大家应该都懂吧,  然后用abs把负值的也掰为正的,实现有两条相对的流光
+        dirColor*=color.a;      //  乘一下kuang的透明通道, 把不是kuang上的颜色剔除掉  
+        dirColor= pow(dirColor,2.);    //pow一下不然流光范围太大   
+
+        vec4 finalkuangColor= v_color*dirColor;     // 流光颜色叠加我们的主颜色 
+ 
+        color += color*finalkuangColor*kuangColorStrength;     // 对流光颜色进行增亮, 不然太暗  
+   
+        return color;
+     }  
+ }%
+  
+    
