@@ -1,5 +1,3 @@
-## Cocos Creator Shader
-
 ### 简介
 基于 CocosCreator 3.5.0 版本创建的 **基于 XRay 模型遮挡透视** 工程。
 

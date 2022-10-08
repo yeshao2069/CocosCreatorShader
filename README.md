@@ -30,6 +30,7 @@ Cocos Creator v3.5.x
 | 58 | 2D | [色环](#colorcircle) | 59 | 2D | [头像边缘流光](#headframe) | 60 | 2D | [文字边缘](#outeredgeoftext) |
 | 61 | 2D | [八角形](#octagrams) | 62 | 2D | [分形树](#fractaltrees) | 63 | 2D | [等离子球](#plasmaglobe) |
 | 64 | 2D | [星巢](#starnest) | 65 | 2D | [风格化fuji](#cyberfuji) | 66 | 2D | [复古的太阳](#retrosun) |
+| 67 | 2D | [流失](#downthedrain) |
 
 ### 3D
 | NO1 | Type1 | Proj1 | NO2 | Type2 | Proj2 | NO3 | Type3 | Proj3 |
@@ -545,3 +546,12 @@ Cocos Creator v3.5.x
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | 4.6 | 2D | [复古的太阳](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP2/Creator3.5.2_2D_RetroSun) | 3.5.2 | [返回顶部](#2d) | 来源：shadertoy.com |
 <div align=center><img src="./gif/202208/2022081502.gif" width="400" height="300" /></div>
+
+### DownTheDrain
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 4.7 | 2D | [流失](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.5.x/demo/2dP2/Creator3.5.2_2D_DownTheDrain) | 3.5.2 | [返回顶部](#2d) | 来源：shadertoy.com |
+<div align=center><img src="./gif/202208/2022081601.gif" width="400" height="300" /></div>
+
+### Mark
+Cocos Creator Shader 3.5.x 版本列举效果 85 种，会同步更新到 [Cocos Creator Shader 3.6.x](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x) 版本，后续 Cocos Creator Shader 3.5.x 将不会同步新的效果，请移步到 3.6.x 版本查看最新效果。

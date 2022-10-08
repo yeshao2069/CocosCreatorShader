@@ -1,5 +1,3 @@
-## Cocos Creator Shader
-
 ### 简介
 基于 CocosCreator 3.5.2 版本创建的 **光行** 工程。
 
