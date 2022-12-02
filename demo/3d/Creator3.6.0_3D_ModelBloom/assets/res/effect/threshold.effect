@@ -1,0 +1,57 @@
+// Effect Syntax Guide: https://github.com/cocos-creator/docs-3d/blob/master/zh/material-system/effect-syntax.md
+
+CCEffect %{
+  techniques:
+  - name: opaque
+    passes:
+    - vert: fx-bloom2-threshold-vs:vert # builtin header
+      frag: fx-bloom2-threshold-fs:frag
+      properties: &props
+        thresholdVal: { value: 0.3, editor: { displayName: threshold val, range: [0, 1] }}
+        screenTex:    { value: white }
+}%
+
+CCProgram fx-bloom2-threshold-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #include <legacy/decode-base>
+  #include <legacy/local-batch>
+  #include <legacy/input-standard>
+  #include <legacy/fog-vs>
+
+  out vec2 v_uv;
+
+  vec4 vert () {
+    StandardVertInput In;
+    CCVertInput(In);
+
+    v_uv = a_texCoord;
+
+    return In.position;
+  }
+}%
+
+CCProgram fx-bloom2-threshold-fs %{
+  precision highp float;
+  #include <legacy/output>
+  #include <legacy/fog-fs>
+
+  in vec2 v_uv;
+
+  uniform sampler2D screenTex;
+
+  uniform Constants {
+    float thresholdVal;
+  };
+
+  vec4 frag () {
+    vec4 col = texture(screenTex, v_uv);
+    float luminace = sqrt(col.r*col.r*0.299 + col.g*col.g*0.587 + col.b*col.b*0.114);
+
+    if (luminace < thresholdVal) {
+      col = vec4(0., 0., 0., 1.);
+    }
+
+    return CCFragOutput(col);
+  }
+}%

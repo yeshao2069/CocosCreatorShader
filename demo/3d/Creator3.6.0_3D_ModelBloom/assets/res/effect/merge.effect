@@ -1,0 +1,54 @@
+
+CCEffect %{
+  techniques:
+  - name: opaque
+    passes:
+    - vert: fx-bloom2-merge-vs:vert
+      frag: fx-bloom2-merge-fs:frag
+      properties:
+        screenTex:  { value: white }
+        tempTex:    { value: white }
+}%
+
+CCProgram fx-bloom2-merge-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #include <legacy/decode-base>
+  #include <legacy/local-batch>
+  #include <legacy/input-standard>
+  #include <legacy/fog-vs>
+
+  out vec2 v_uv;
+
+  vec4 vert () {
+    StandardVertInput In;
+    CCVertInput(In);
+
+    v_uv = a_texCoord;
+
+    return In.position;
+  }
+}%
+
+CCProgram fx-bloom2-merge-fs %{
+  precision highp float;
+  #include <legacy/output>
+  #include <legacy/fog-fs>
+
+  in vec2 v_uv;
+
+  uniform sampler2D screenTex;
+  uniform sampler2D tempTex;
+
+  vec4 frag () {
+    vec4 col = vec4(0., 0., 0., 0.);
+
+    col += texture(screenTex, v_uv);
+    col += texture(tempTex, v_uv);
+
+    // return CCFragOutput(col);
+    return col;
+  }
+
+}%
+

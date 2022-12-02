@@ -1,0 +1,12 @@
+{
+  "ver": "4.0.23",
+  "importer": "typescript",
+  "imported": true,
+  "uuid": "e857705a-c38c-4121-b53e-e4552adcf5dd",
+  "files": [],
+  "subMetas": {},
+  "userData": {
+    "moduleId": "project:///assets/resources/scenes/rim_light/AppStart_RimLight.js",
+    "simulateGlobals": []
+  }
+}

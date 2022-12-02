@@ -1,0 +1,42 @@
+{
+  "ver": "1.0.24",
+  "importer": "image",
+  "imported": true,
+  "uuid": "7cc1916e-56f8-4f75-8106-a017237044d2",
+  "files": [
+    ".json",
+    ".png"
+  ],
+  "subMetas": {
+    "6c48a": {
+      "importer": "texture",
+      "uuid": "7cc1916e-56f8-4f75-8106-a017237044d2@6c48a",
+      "displayName": "decal-diffuse",
+      "id": "6c48a",
+      "name": "texture",
+      "userData": {
+        "wrapModeS": "clamp-to-edge",
+        "wrapModeT": "clamp-to-edge",
+        "minfilter": "linear",
+        "magfilter": "linear",
+        "mipfilter": "none",
+        "anisotropy": 0,
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "7cc1916e-56f8-4f75-8106-a017237044d2",
+        "visible": true
+      },
+      "ver": "1.0.22",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "hasAlpha": true,
+    "type": "texture",
+    "redirect": "7cc1916e-56f8-4f75-8106-a017237044d2@6c48a",
+    "fixAlphaTransparencyArtifacts": false
+  }
+}

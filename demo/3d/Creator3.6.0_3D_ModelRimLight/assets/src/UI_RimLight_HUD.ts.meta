@@ -1,0 +1,12 @@
+{
+  "ver": "4.0.23",
+  "importer": "typescript",
+  "imported": true,
+  "uuid": "838c0141-3caf-4597-a635-914b989d33ec",
+  "files": [],
+  "subMetas": {},
+  "userData": {
+    "moduleId": "project:///assets/resources/scenes/rim_light/hud/UI_RimLight_HUD.js",
+    "simulateGlobals": []
+  }
+}

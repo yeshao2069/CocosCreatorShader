@@ -1,0 +1,42 @@
+{
+  "ver": "1.0.25",
+  "importer": "image",
+  "imported": true,
+  "uuid": "b2930652-f775-4bad-8291-7125780e6295",
+  "files": [
+    ".jpeg",
+    ".json"
+  ],
+  "subMetas": {
+    "6c48a": {
+      "importer": "texture",
+      "uuid": "b2930652-f775-4bad-8291-7125780e6295@6c48a",
+      "displayName": "Sky_Texture",
+      "id": "6c48a",
+      "name": "texture",
+      "userData": {
+        "wrapModeS": "repeat",
+        "wrapModeT": "repeat",
+        "minfilter": "linear",
+        "magfilter": "linear",
+        "mipfilter": "none",
+        "anisotropy": 0,
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "b2930652-f775-4bad-8291-7125780e6295",
+        "visible": true
+      },
+      "ver": "1.0.22",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "hasAlpha": false,
+    "type": "texture",
+    "redirect": "b2930652-f775-4bad-8291-7125780e6295@6c48a",
+    "fixAlphaTransparencyArtifacts": false
+  }
+}

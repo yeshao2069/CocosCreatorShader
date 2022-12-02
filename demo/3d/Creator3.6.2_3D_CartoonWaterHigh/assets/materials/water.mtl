@@ -1,0 +1,87 @@
+{
+  "__type__": "cc.Material",
+  "_name": "",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "187be6e6-929f-4230-a21a-a2e45ccaf1fd",
+    "__expectedType__": "cc.EffectAsset"
+  },
+  "_techIdx": "1",
+  "_defines": [
+    {
+      "USE_EFFECT": true
+    },
+    {},
+    {}
+  ],
+  "_states": [
+    {
+      "rasterizerState": {},
+      "depthStencilState": {},
+      "blendState": {
+        "targets": [
+          {}
+        ]
+      }
+    },
+    {},
+    {}
+  ],
+  "_props": [
+    {
+      "mainColor": {
+        "__type__": "cc.Color",
+        "r": 0,
+        "g": 132,
+        "b": 255,
+        "a": 255
+      },
+      "reflectTexture": {
+        "__uuid__": "bc888c42-e054-4037-a092-8533fbfe7364@b47c0",
+        "__expectedType__": "cc.TextureCube"
+      },
+      "fresnelPow": 5,
+      "noiseTexture": {
+        "__uuid__": "172b4fe0-b60a-46fd-a72f-674e9eab9a7b@6c48a",
+        "__expectedType__": "cc.Texture2D"
+      },
+      "depthTexture": {
+        "__uuid__": "960c3199-fe5d-4d7c-aa44-f2fbd1ed17ae",
+        "__expectedType__": "cc.RenderTexture"
+      },
+      "shallowColor": {
+        "__type__": "cc.Color",
+        "r": 162,
+        "g": 238,
+        "b": 255,
+        "a": 180
+      },
+      "causticsTexture": {
+        "__uuid__": "e46c463c-8dce-4385-be76-ca194b05403a@6c48a",
+        "__expectedType__": "cc.Texture2D"
+      },
+      "foamTexture": {
+        "__uuid__": "172b4fe0-b60a-46fd-a72f-674e9eab9a7b@6c48a",
+        "__expectedType__": "cc.Texture2D"
+      },
+      "distortionTexture": {
+        "__uuid__": "b4ea88cb-50d1-44d5-9b1a-e630c94d058d@6c48a",
+        "__expectedType__": "cc.Texture2D"
+      },
+      "normalTexture": {
+        "__uuid__": "f47d6158-88c6-4f0c-a80e-0cf702fdb370",
+        "__expectedType__": "cc.RenderTexture"
+      },
+      "rimColor": {
+        "__type__": "cc.Color",
+        "r": 153,
+        "g": 226,
+        "b": 241,
+        "a": 255
+      }
+    },
+    {},
+    {}
+  ]
+}

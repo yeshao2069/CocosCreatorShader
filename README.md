@@ -6,43 +6,40 @@ Cocos Creator v3.6.x
 
 
 ### 2D
-| NO1 | Type1 | Proj1 | NO2 | Type2 | Proj2 | NO3 | Type3 | Proj3 |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1 | 2D | [图片闪光](#flashlight) | 2 | 2D | [受击闪白](#hitwhite) | 3 | 2D | [UI内发光](#glowinner) |
-| 4 | 2D | [高斯模糊](#gaussianblur) | 5 | 2D | [圆形头像](#circleavatar) | 6 | 2D | [图片溶解](#spritedissolve) |
-| 7 | 2D | [图片特效合集](#spritefilter) | 8 | 2D | [渐变过渡的相册](#gradualtransitionalalbum) | 9 | 2D | [马赛克](#spritemosaic) |
-| 10 | 2D | [镜面光泽](#spritestreamer) | 11 | 2D | [水面波纹](#waterspread) | 12 | 2D | [灯光跟随](#followspot) |
-| 13 | 2D | [融球](#metaball) | 14 | 2D | [图片消融](#spriteablation) | 15 | 2D | [2D灯光](#sprite2dlight) |
-| 16 | 2D | [摸牌](#drawcard) | 17 | 2D | [按钮流光](#buttonambilight) | 18 | 2D | [彩虹](#spritedrawrainbow) |
-| 19 | 2D | [动态光影](#spritedynamiclightandshadow) | 20 | 2D | [图片高亮](#spritehighlight) | 21 | 2D | [大风吹](#windblowingthrough2d) |
-| 22 | 2D | [自定义头像](#spriteradiusshader) | 23 | 2D | [加载](#spriteloading) | 24 | 2D | [波浪](#spritewave) |
-| 25 | 2D | [曲线波浪](#spritesinewave) | 26 | 2D | [UI内发光2](#glowinnerv2) | 27 | 2D | [加载2](#loadingstyle) |
-| 28 | 2D | [UI外发光](#glowoutter) | 29 | 2D | [2D火焰描边](#firestroke) | 30 | 2D | [循环隧道](#looptunnel) |
-| 31 | 2D | [转场动画](#transition) | 32 | 2D | [满月与星光](#moonstar) | 33 | 2D | [箭头引导线](#arrowguideline) |
-| 34 | 2D | [无限滚动背景](#movingbackground) | 35 | 2D | [方形进度加载](#rectdraw) | 36 | 2D | [河面](#river) |
-| 37 | 2D | [卡牌透视](#cardperspective) | 38 | 2D | [情人节](#valentineday) | 39 | 2D | [迷人的色彩](#amazingcolor) |
-| 40 | 2D | [迷恋](#obsession) | 41 | 2D | [光圈](#lightcircle) | 42 | 2D | [网状光圈](#lightnet) |
-| 43 | 2D | [光行](#lightrun) | 44 | 2D | [心跳](#heartbeat) | 45 | 2D | [超级马里奥](#supermario) |
-| 46 | 2D | [旋转的圆点](#swirlingdots) | 47 | 2D | [变形花](#deformflower) | 48 | 2D | [星空](#starbackground) |
-| 49 | 2D | [草地](#grassy) | 50 | 2D | [空间传送门](#glowcircle) | 51 | 2D | [形状调整](#tweaked) |
-| 52 | 2D | [ShaderBook特效](#shaderbook) | 53 | 2D | [下雨](#rain) | 54 | 2D | [蓝天白云](#cloud) |
-| 55 | 2D | [微笑](#smile) | 56 | 2D | [Emoji风格微笑](#emojismile) | 57 | 2D | [三叶草](#clover) |
-| 58 | 2D | [色环](#colorcircle) | 59 | 2D | [头像边缘流光](#headframe) | 60 | 2D | [文字边缘](#outeredgeoftext) |
-| 61 | 2D | [八角形](#octagrams) | 62 | 2D | [分形树](#fractaltrees) | 63 | 2D | [等离子球](#plasmaglobe) |
-| 64 | 2D | [星巢](#starnest) | 65 | 2D | [风格化fuji](#cyberfuji) | 66 | 2D | [复古的太阳](#retrosun) |
-| 67 | 2D | [流失](#downthedrain) | 68 | 2D | [寰宇之内](#universewithin) | 69 | 2D | [图片渐变](#spritegradient) |
-| 70 | 2D | [图片阴影](#spriteshadow) | 71 | 2D | [卷轴展开和收拢](#reelunfoldingandclosing) | 72 | 2D | [图片边缘发光](#edgehighlight) |
-| 73 | 2D | [阴间披风](#cloakoftheunderworld) |
+| NO1 | Proj1 | NO2 | Proj2 | NO3 | Proj3 | NO4 | Proj4 |
+| :---: | :--- | :---: | :--- | :---: | :--- | :---: | :--- |
+| 1 | [图片闪光](#flashlight) | 2 | [受击闪白](#hitwhite) | 3 | [UI内发光](#glowinner) | 4 | [高斯模糊](#gaussianblur) |
+| 5 | [圆形头像](#circleavatar) | 6 | [图片溶解](#spritedissolve) | 7 | [图片特效合集](#spritefilter) | 8 | [渐变过渡的相册](#gradualtransitionalalbum) |
+| 9 | [马赛克](#spritemosaic) | 10 | [镜面光泽](#spritestreamer) | 11 | [水面波纹](#waterspread) | 12 | [灯光跟随](#followspot) |
+| 13 | [融球](#metaball) | 14 | [图片消融](#spriteablation) | 15 | [2D灯光](#sprite2dlight) | 16 | [摸牌](#drawcard) |
+| 17 | [按钮流光](#buttonambilight) | 18 | [彩虹](#spritedrawrainbow) | 19 | [动态光影](#spritedynamiclightandshadow) | 20 | [图片高亮](#spritehighlight) |
+| 21 | [大风吹](#windblowingthrough2d) | 22 | [自定义头像](#spriteradiusshader) | 23 | [加载](#spriteloading) | 24 | [波浪](#spritewave) |
+| 25 | [曲线波浪](#spritesinewave) | 26 | [UI内发光2](#glowinnerv2) | 27 | [加载2](#loadingstyle) | 28 | [UI外发光](#glowoutter) |
+| 29 | [2D火焰描边](#firestroke) | 30 | [循环隧道](#looptunnel) | 31 | [转场动画](#transition) | 32 | [满月与星光](#moonstar) |
+| 33 | [箭头引导线](#arrowguideline) | 34 | [无限滚动背景](#movingbackground) | 35 | [方形进度加载](#rectdraw) | 36 | [河面](#river) |
+| 37 | [卡牌透视](#cardperspective) | 38 | [情人节](#valentineday) | 39 | [迷人的色彩](#amazingcolor) | 40 | [迷恋](#obsession) |
+| 41 | [光圈](#lightcircle) | 42 | [网状光圈](#lightnet) | 43 | [光行](#lightrun) | 44 | [心跳](#heartbeat) |
+| 45 | [超级马里奥](#supermario) | 46 | [旋转的圆点](#swirlingdots) | 47 | [变形花](#deformflower) | 48 | [星空](#starbackground) |
+| 49 | [草地](#grassy) | 50 | [空间传送门](#glowcircle) | 51 | [形状调整](#tweaked) | 52 | [ShaderBook特效](#shaderbook) |
+| 53 | [下雨](#rain) | 54 | [蓝天白云](#cloud) | 55 | [微笑](#smile) | 56 | [Emoji风格微笑](#emojismile) |
+| 57 | [三叶草](#clover) | 58 | [色环](#colorcircle) | 59 | [头像边缘流光](#headframe) | 60 | [文字边缘](#outeredgeoftext) |
+| 61 | [八角形](#octagrams) | 62 | [分形树](#fractaltrees) | 63 | [等离子球](#plasmaglobe) | 64 | [星巢](#starnest) |
+| 65 | [风格化fuji](#cyberfuji) | 66 | [复古的太阳](#retrosun) | 67 | [流失](#downthedrain) | 68 | [寰宇之内](#universewithin) |
+| 69 | [图片渐变](#spritegradient) | 70 | [图片阴影](#spriteshadow) | 71 | [卷轴展开和收拢](#reelunfoldingandclosing) | 72 | [图片边缘发光](#edgehighlight) |
+| 73 | [阴间披风](#cloakoftheunderworld) | 74 | [2D雾效](#fog2d) | 75 | [Cocos启动页文字](#labelcocos) | 76 | [果冻Q弹效果](#jelly) |
+| 77 | [光射线](#lightrays2d) | 78 | [局部模糊](#blur2d) | 79 | [蓝色大海](#bluesea) | 80 | [光和影](#lightandshadow) |
 
 ### 3D
-| NO1 | Type1 | Proj1 | NO2 | Type2 | Proj2 | NO3 | Type3 | Proj3 |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1 | 3D | [人物护盾](#roleshield) | 2 | 3D | [模型高亮](#rolehighlight) | 3 | 3D | [模型遮挡透视](#occlusionperspective) |
-| 4 | 3D | [LowPoly风格水面](#lowpolywater) | 5 | 3D | [噪声水面](#noisewater) | 6 | 3D | [模型内发光](#modelinnerglow) |
-| 7 | 3D | [模型描边](#modeloutline) | 8 | 3D | [模型消融](#modeldissolve) | 9 | 3D | [云海](#seaofclouds) |
-| 10 | 3D | [模型擦除](#modelerase) | 11 | 3D | [UV动画](#uvanimation) | 12 | 3D | [UV动画混合](#uvanimationblend) |
-| 13 | 3D | [UV动画扰动](#uvanimationdistortion) | 14 | 3D | [UV动画移动扰动](#uvanimationmovedistortion) | 15 | 3D | [模型扰动](#modeldistortion) |
-| 16 | 3D | [模型特效](#modeleffect) | 17 | 3D | [3D导航线](#guideline) | 18 | 3D | [模型透视](#modelperspective) |
+| NO1 | Proj1 | NO2 | Proj2 | NO3 | Proj3 | NO4 | Proj4 |
+| :---: | :--- | :---: | :--- | :---: | :--- | :---: | :--- |
+| 1 | [人物护盾](#roleshield) | 2 | [模型高亮](#rolehighlight) | 3 | [模型遮挡透视](#occlusionperspective) | 4 | [LowPoly风格水面](#lowpolywater) |
+| 5 | [噪声水面](#noisewater) | 6 | [模型内发光](#modelinnerglow) | 7 | [模型描边](#modeloutline) | 8 | [模型消融](#modeldissolve) |
+| 9 | [云海](#seaofclouds) | 10 | [模型擦除](#modelerase) | 11 | [UV动画](#uvanimation) | 12 | [UV动画混合](#uvanimationblend) |
+| 13 | [UV动画扰动](#uvanimationdistortion) | 14 | [UV动画移动扰动](#uvanimationmovedistortion) | 15 | [模型扰动](#modeldistortion) | 16 | [模型特效](#modeleffect) |
+| 17 | [3D导航线](#guideline) | 18 | [模型透视](#modelperspective) | 19 | [屏幕后处理特效](#snapshot) | 20 | [模型边缘光](#modelrimlight) |
+| 21 | [武器发光](#weaponglow) | 22 | [模型辉光](#modelbloom) | 23 | [雨滴滑落](#raindrop) | 24 | [模型贴花](#graffiti) |
+| 25 | [模型拖尾](#rolemotionvertex) | 26 | [后效-SSAO](#ssao) | 27 | [后效-SSR](#ssr) | 28 | [声呐特效](#sonar) |
+| 29 | [卡通风格水面渲染](#cartoonwater) | 30 | [高级卡通风格水面渲染](#cartoonwaterhigh) | 31 | [3DUI圆形头像](#circleavatar3d) | 32 | [全息投影](#hologram) |
 
 ## Examples
 ### FlashLight
@@ -333,6 +330,78 @@ Cocos Creator v3.6.x
 | 2.18 | 3D | [模型透视](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/3d/Creator3.6.0_3D_ModelPerspective) | 3.6.0 | [返回顶部](#3d) | 低 | 无 |
 <div align=center><img src="./gif/202208/2022080501.gif" width="400" height="300" /></div>
 
+### Snapshot
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 2.19 | 3D | [屏幕后处理特效](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/3d/Creator3.6.1_3D_Snapshot) | 3.6.1 | [返回顶部](#3d) | 中 | 无 |
+<div align=center><img src="./gif/202210/2022101001.gif" width="400" height="300" /></div>
+
+### ModelRimLight
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 2.20 | 3D | [模型边缘光](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/3d/Creator3.6.0_3D_ModelRimLight) | 3.6.0 | [返回顶部](#3d) | 低 | 无 |
+<div align=center><img src="./gif/202210/2022101002.gif" width="400" height="300" /></div>
+
+### WeaponGlow
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 2.21 | 3D | [武器发光](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/3d/Creator3.6.0_3D_WeaponGlow) | 3.6.0 | [返回顶部](#3d) | 低 | 无 |
+<div align=center><img src="./gif/202210/2022101003.gif" width="400" height="300" /></div>
+
+### ModelBloom
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 2.22 | 3D | [模型辉光](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/3d/Creator3.6.0_3D_ModelBloom) | 3.6.0 | [返回顶部](#3d) | 低 | 无 |
+<div align=center><img src="./gif/202210/2022101012.gif" width="400" height="300" /></div>
+
+### RainDrop
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 2.23 | 3D | [雨滴滑落](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/3d/Creator3.6.0_3D_RainDrop) | 3.6.0 | [返回顶部](#3d) | 低 | 无 |
+<div align=center><img src="./gif/202210/2022101004.gif" width="400" height="300" /></div>
+
+### Graffiti
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 2.24 | 3D | [模型贴花](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/3d/Creator3.6.0_3D_Graffiti) | 3.6.0 | [返回顶部](#3d) | 低 | 无 |
+<div align=center><img src="./gif/202210/2022101005.gif" width="400" height="300" /></div>
+
+### RoleMotionVertex
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 2.25 | 3D | [模型拖尾](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/3d/Creator3.6.0_3D_RoleMotionVertex) | 3.6.0 | [返回顶部](#3d) | 低 | 无 |
+<div align=center><img src="./gif/202210/2022101006.gif" width="400" height="300" /></div>
+
+### SSAO
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 2.26 | 3D | [后处理效果-SSAO](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/3d/Creator3.6.2_3D_DeferredPipeline_SSAO) | 3.6.2 | [返回顶部](#3d) | 中 | 自定义渲染管线 |
+<div align=center><img src="./image/202210/2022101701.jpg" width="400" height="300" /></div>
+
+### SSR
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 2.27 | 3D | [后处理效果-SSR](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/3d/Creator3.6.2_3D_DeferredPipeline_SSR) | 3.6.2 | [返回顶部](#3d) | 中 | 自定义渲染管线 |
+<div align=center><img src="./gif/202211/2022110801.gif" width="400" height="300" /></div>
+
+### Sonar
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 2.28 | 3D | [声呐特效](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/3d/Creator3.6.2_3D_Sonar) | 3.6.2 | [返回顶部](#3d) | 中 | 无 |
+<div align=center><img src="./gif/202211/2022110802.gif" width="400" height="300" /></div>
+
+### CartoonWater
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 2.29 | 3D | [卡通风格水面渲染](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/3d/Creator3.6.2_3D_CartoonWater) | 3.6.2 | [返回顶部](#3d) | 中 | 无 |
+<div align=center><img src="./gif/202211/2022110811.gif" width="400" height="300" /><img src="./gif/202211/2022110812.gif" width="400" height="300" /></div>
+
+### CartoonWaterHigh
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 2.30 | 3D | [高级卡通风格水面渲染](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/3d/Creator3.6.2_3D_CartoonWaterHigh) | 3.6.2 | [返回顶部](#3d) | 中 | 无 |
+<div align=center><img src="./gif/202211/2022110813.gif" width="400" height="300" /></div>
+
 ### Transition
 | 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -590,3 +659,57 @@ Cocos Creator v3.6.x
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | 4.13 | 2D | [阴间披风](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/2dP2/Creator3.6.0_2D_CloakOfTheUnderworld) | 3.6.0 | [返回顶部](#2d) | 低 | 无 |
 <div align=center><img src="./gif/202209/2022092301.gif" width="400" height="300" /></div>
+
+### Fog2D
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 4.14 | 2D | [*2D雾效](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/2dP2/Creator3.6.2_2D_Fog) | 3.6.2 | [返回顶部](#2d) | 低 | 在 macOS Chrome 有渲染问题，Windows 正常 |
+<div align=center><img src="./gif/202211/2022110803.gif" width="400" height="300" /></div>
+
+### LabelCocos
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 4.15 | 2D | [Cocos启动页](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/2dP2/Creator3.6.2_2D_Label_Cocos) | 3.6.2 | [返回顶部](#2d) | 中 | 来源：shadertoy.com |
+<div align=center><img src="./image/202211/2022110801.jpeg" width="400" height="300" /></div>
+
+### Jelly
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 4.16 | 2D | [果冻Q弹效果](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/2dP2/Creator3.6.2_2D_Jelly) | 3.6.2 | [返回顶部](#2d) | 低 | 无 |
+<div align=center><img src="./gif/202211/2022111301.gif" width="400" height="300" /></div>
+
+### LightRays2D
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 4.17 | 2D | [光射线](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/2dP2/Creator3.6.2_2D_LightRays2D) | 3.6.2 | [返回顶部](#2d) | 低 | 无 |
+<div align=center><img src="./gif/202211/2022111601.gif" width="400" height="300" /></div>
+
+### Blur2D
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 4.18 | 2D | [局部模糊](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/2dP2/Creator3.6.2_2D_Blur) | 3.6.2 | [返回顶部](#2d) | 低 | 无 |
+<div align=center><img src="./gif/202212/2022120201.gif" width="400" height="300" /></div>
+
+### BlueSea
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 4.19 | 2D | [蓝色大海](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/2dP2/Creator3.6.2_2D_BlueSea) | 3.6.2 | [返回顶部](#2d) | 低 | 来源：shadertoy.com |
+<div align=center><img src="./gif/202212/2022120202.gif" width="400" height="300" /></div>
+
+### LightAndShadow
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 4.20 | 2D | [光和影](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/2dP2/Creator3.6.2_2D_LightAndShadow) | 3.6.2 | [返回顶部](#2d) | 中 | 来源：shadertoy.com |
+<div align=center><img src="./gif/202212/2022120203.gif" width="400" height="300" /></div>
+
+### CircleAvatar3D
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 5.1 | 3D | [3DUI圆形头像](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/3dP1/Creator3.6.2_3D_CircleAvatar) | 3.6.2 | [返回顶部](#3d) | 低 | 无 |
+<div align=center><img src="./image/202211/2022111401.png" width="400" height="300" /></div>
+
+### Hologram
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 5.2 | 3D | [全息投影](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/3dP1/Creator3.6.2_3D_Hologram) | 3.6.2 | [返回顶部](#3d) | 低 | 无 |
+<div align=center><img src="./gif/202211/2022112301.gif" width="400" height="300" /></div>

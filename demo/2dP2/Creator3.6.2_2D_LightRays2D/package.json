@@ -1,0 +1,11 @@
+{
+  "creator": {
+    "version": "3.6.2"
+  },
+  "devDependencies": {
+    "@types/web3": "^1.2.2"
+  },
+  "name": "NewProject_24",
+  "uuid": "183d32e2-ca2f-4d14-baef-f8272eb770fb",
+  "version": "3.6.2"
+}
