@@ -28,6 +28,7 @@ Cocos Creator v3.6.x
 | 69 | [图片渐变](#spritegradient) | 70 | [图片阴影](#spriteshadow) | 71 | [卷轴展开和收拢](#reelunfoldingandclosing) | 72 | [图片边缘发光](#edgehighlight) |
 | 73 | [阴间披风](#cloakoftheunderworld) | 74 | [2D雾效](#fog2d) | 75 | [Cocos启动页文字](#labelcocos) | 76 | [果冻Q弹效果](#jelly) |
 | 77 | [光射线](#lightrays2d) | 78 | [局部模糊](#blur2d) | 79 | [蓝色大海](#bluesea) | 80 | [光和影](#lightandshadow) |
+| 81 | [跳动的小球](#dancingball) | 82 | [跳舞](#strokesaredancing) |
 
 ### 3D
 | NO1 | Proj1 | NO2 | Proj2 | NO3 | Proj3 | NO4 | Proj4 |
@@ -701,6 +702,18 @@ Cocos Creator v3.6.x
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | 4.20 | 2D | [光和影](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/2dP2/Creator3.6.2_2D_LightAndShadow) | 3.6.2 | [返回顶部](#2d) | 中 | 来源：shadertoy.com |
 <div align=center><img src="./gif/202212/2022120203.gif" width="400" height="300" /></div>
+
+### DancingBall
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 4.21 | 2D | [跳动的小球](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/2dP2/Creator3.6.2_2D_DancingBall) | 3.6.2 | [返回顶部](#2d) | 中 | 来源：shadertoy.com |
+<div align=center><img src="./gif/202212/2022120701.gif" width="400" height="300" /></div>
+
+### StrokesAreDancing
+| 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 4.22 | 2D | [跳舞](https://gitee.com/yeshao2069/cocos-creator-shader/tree/v3.6.x/demo/2dP2/Creator3.6.2_2D_StrokesAreDancing) | 3.6.2 | [返回顶部](#2d) | 中 | 来源：shadertoy.com |
+<div align=center><img src="./gif/202212/2022120901.gif" width="400" height="300" /></div>
 
 ### CircleAvatar3D
 | 编号 | 类目 | 项目 | 编辑器版本 | 返回顶部 | 模式 | 备注 |
