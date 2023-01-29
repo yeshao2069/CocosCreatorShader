@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **ShaderBook特效** 工程。
+**Shader Book Effect** project created based on CocosCreator version 3.6.0
 
 ### Preview
 <div align=center><img src="../../../image/202207/2022070801.png" width="300" height="300" /></div>

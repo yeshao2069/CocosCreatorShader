@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.2 版本创建的 **声呐特效** 工程。
+**Sonar** project created based on CocosCreator version 3.6.2
 
 ### Preview
 ![image](../../../gif/202211/2022110802.gif)

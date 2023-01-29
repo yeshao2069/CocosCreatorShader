@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **3D导航线** 工程。
+**Guide Line (3D)** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202207/2022072601.gif)

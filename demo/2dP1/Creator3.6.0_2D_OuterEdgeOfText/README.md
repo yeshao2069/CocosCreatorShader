@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **文字边缘** 工程。
+**Outer Edge Of Text** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202208/2022080502.gif)

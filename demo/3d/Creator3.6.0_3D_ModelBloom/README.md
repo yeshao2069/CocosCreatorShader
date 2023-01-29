@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **模型辉光** 工程
+**Model Bloom** project created based on CocosCreator version 3.6.0
 
 ### Preview
 - 未开启辉光    

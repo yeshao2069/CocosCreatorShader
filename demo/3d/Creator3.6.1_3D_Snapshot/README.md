@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.1 版本创建的 **屏幕后处理特效** 工程。
+**Snap Shot** project created based on CocosCreator version 3.6.1
 
 ### Preview
 ![image](../../../gif/202210/2022101001.gif)

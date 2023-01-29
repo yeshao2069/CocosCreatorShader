@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **光行** 工程。
+**Light Run** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202207/2022070403.gif)

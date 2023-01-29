@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **噪声水面** 工程。
+**Noise Style Water** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202206/2022061601.gif)

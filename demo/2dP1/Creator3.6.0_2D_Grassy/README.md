@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **草地** 工程。
+**Grassy (Sprite)** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202207/2022070408.gif)

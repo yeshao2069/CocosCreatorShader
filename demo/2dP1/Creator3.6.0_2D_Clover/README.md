@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **三叶草** 工程。
+**Clover** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202207/2022072401.gif)

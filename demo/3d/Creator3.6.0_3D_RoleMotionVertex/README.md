@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **3D模型拖尾** 工程
+**Role Motion Vertex** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202210/2022101006.gif)

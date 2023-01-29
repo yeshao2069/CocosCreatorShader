@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.2 版本创建的 **果冻Q弹效果** 工程。
+**Jelly (Sprite)** project created based on CocosCreator version 3.6.2
 
 ### Preview
 ![image](../../../gif/202211/2022111301.gif)

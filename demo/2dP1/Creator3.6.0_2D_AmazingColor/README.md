@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **迷人的色彩** 工程。
+**Amazing Color** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202207/2022070301.gif)

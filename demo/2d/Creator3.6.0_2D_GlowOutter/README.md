@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **2D外发光** 工程。
+**Glow Outter (Sprite)** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202205/2022050101.gif)

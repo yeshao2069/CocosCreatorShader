@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **曲线波浪** 工程。
+**Sine Wave (Sprite)** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202202/2022022505.gif)

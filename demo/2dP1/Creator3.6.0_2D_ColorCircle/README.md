@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **色环** 工程。
+**Color Circle** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202207/2022072402.gif)

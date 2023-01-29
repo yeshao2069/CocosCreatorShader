@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **卷轴展开和收拢** 工程。
+**Reel Unfolding And Closing** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202209/2022092201.gif)

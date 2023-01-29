@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **河面** 工程。
+**River** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202206/2022063002.gif)

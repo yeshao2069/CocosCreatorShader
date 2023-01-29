@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **蓝天白云** 工程。
+**Clouds** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202207/2022072301.gif)

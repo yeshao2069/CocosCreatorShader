@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **旋转的圆点** 工程。
+**Swirling Dots** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202207/2022070406.gif)

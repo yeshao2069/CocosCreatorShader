@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.2 版本创建的 **跳动的小球** 工程。
+**Dacing Ball** project created based on CocosCreator version 3.6.2
 
 ### Preview
 ![image](../../../gif/202212/2022120701.gif)

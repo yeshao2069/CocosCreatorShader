@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **方形进度加载** 工程。
+**Rect Head Loading** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202206/2022063001.gif)

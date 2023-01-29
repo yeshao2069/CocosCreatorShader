@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **图片渐变** 工程。
+**Sprite Gradient** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202209/2022091901.gif)

@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **下雨** 工程。
+**Rain** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../image/202207/2022071901.png)

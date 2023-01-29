@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **Emoji风格微笑** 工程。
+**Emoji Style Smile** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../image/202207/2022072302.png)

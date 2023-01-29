@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **满月与星光** 工程。
+**Moon And Star** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../image/202206/2022061601.png)

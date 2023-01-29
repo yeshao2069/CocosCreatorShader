@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **模型边缘光** 工程
+**Rim Light (Model)** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202210/2022101002.gif)

@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **等离子球** 工程。
+**Plasma Globe** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202208/2022080901.gif)

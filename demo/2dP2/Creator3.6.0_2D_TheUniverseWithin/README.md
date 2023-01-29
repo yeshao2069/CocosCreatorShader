@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **寰宇之内** 工程。
+**The Universe Within** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202209/2022091301.gif)

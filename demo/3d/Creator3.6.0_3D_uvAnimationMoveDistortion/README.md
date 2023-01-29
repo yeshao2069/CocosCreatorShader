@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **UV动画移动扰动** 工程。
+**UV Animation Move And Distortion** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202207/2022072104.gif)

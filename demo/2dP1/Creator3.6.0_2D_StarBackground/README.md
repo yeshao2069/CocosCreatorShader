@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **星空** 工程。
+**Star Background** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../image/202207/2022070402.png)

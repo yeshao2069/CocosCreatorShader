@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.2 版本创建的 **光射线** 工程。
+**2D Light Rays** project created based on CocosCreator version 3.6.2
 
 ### Preview
 ![image](../../../gif/202211/2022111601.gif)

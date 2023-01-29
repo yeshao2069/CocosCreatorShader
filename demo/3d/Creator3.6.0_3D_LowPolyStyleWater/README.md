@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **LowPoly风格水面** 工程。
+**Low Poly Style Water** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202206/2022060202.gif)

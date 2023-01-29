@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.2 版本创建的 **高级卡通风格水面渲染** 工程。
+**High Cartoon Water** project created based on CocosCreator version 3.6.2
 
 ### Preview
 ![image](../../../gif/202211/2022110813.gif)

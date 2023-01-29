@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **无限背景移动** 工程。
+**Moving Background** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202206/2022062701.gif)

@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **循环隧道** 工程。
+**Loop Tunnel** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202206/2022060203.gif)
