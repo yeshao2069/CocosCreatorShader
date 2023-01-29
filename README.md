@@ -9,9 +9,9 @@ Cocos Creator v3.6.x
 | NO1 | Proj1 | NO2 | Proj2 | NO3 | Proj3 | NO4 | Proj4 |
 | :---: | :--- | :---: | :--- | :---: | :--- | :---: | :--- |
 | 1 | [Flash Light](#flashlight) | 2 | [Hit White](#hitwhite) | 3 | [Glow Inner (Sprite)](#glowinner) | 4 | [Gaussian Blur](#gaussianblur) |
-| 5 | [Circle Avatar (Sprite)](#circleavatar) | 6 | [Dissolve (Sprite)](#spritedissolve) | 7 | [图片特效合集](#spritefilter) | 8 | [渐变过渡的相册](#gradualtransitionalalbum) |
-| 9 | [马赛克](#spritemosaic) | 10 | [镜面光泽](#spritestreamer) | 11 | [水面波纹](#waterspread) | 12 | [Flolow Spot](#followspot) |
-| 13 | [融球](#metaball) | 14 | [图片消融](#spriteablation) | 15 | [2D Light (Sprite)](#sprite2dlight) | 16 | [摸牌](#drawcard) |
+| 5 | [Circle Avatar (Sprite)](#circleavatar) | 6 | [Dissolve (Sprite)](#spritedissolve) | 7 | [Sprite Filter](#spritefilter) | 8 | [Gradual Transitional Album](#gradualtransitionalalbum) |
+| 9 | [Mosaic (Sprite)](#spritemosaic) | 10 | [Streamer (Sprite)](#spritestreamer) | 11 | [Water Spread](#waterspread) | 12 | [Flolow Spot](#followspot) |
+| 13 | [Metaball (Sprite)](#metaball) | 14 | [Ablation (Sprite)](#spriteablation) | 15 | [2D Light (Sprite)](#sprite2dlight) | 16 | [Draw Card (Sprite)](#drawcard) |
 | 17 | [按钮流光](#buttonambilight) | 18 | [彩虹](#spritedrawrainbow) | 19 | [动态光影](#spritedynamiclightandshadow) | 20 | [图片高亮](#spritehighlight) |
 | 21 | [大风吹](#windblowingthrough2d) | 22 | [自定义头像](#spriteradiusshader) | 23 | [加载](#spriteloading) | 24 | [波浪](#spritewave) |
 | 25 | [曲线波浪](#spritesinewave) | 26 | [Glow Inner (Sprite) ver2](#glowinnerv2) | 27 | [加载2](#loadingstyle) | 28 | [UI外发光](#glowoutter) |
@@ -82,31 +82,31 @@ Cocos Creator v3.6.x
 ### SpriteFilter
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.7 | 2D | [图片特效合集](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_Filter)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.7 | 2D | [Sprite Filter](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_Filter)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./image/202202/2022022402.png" width="400" height="300" /></div>
 
 ### GradualTransitionalAlbum
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.8 | 2D | [渐变过渡的相册](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_GradualTransitionalAlbum)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.8 | 2D | [Gradual Transitional Album](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_GradualTransitionalAlbum)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022408.gif" width="400" height="300" /></div>
 
 ### SpriteMosaic
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.9 | 2D | [马赛克](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_Mosaic)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.9 | 2D | [Mosaic (Sprite)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_Mosaic)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022409.gif" width="400" height="300" /></div>
 
 ### SpriteStreamer
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.10 | 2D | [镜面光泽](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_Streamer)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.10 | 2D | [Streamer (Sprite)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_Streamer)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022410.gif" width="400" height="300" /></div>
 
 ### WaterSpread
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.11 | 2D | [水面波纹](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_WaterSpread)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.11 | 2D | [Water Spread](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_WaterSpread)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022411.gif" width="400" height="300" /></div>
 
 ### FollowSpot
@@ -118,13 +118,13 @@ Cocos Creator v3.6.x
 ### Metaball
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.13 | 2D | [融球](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_Metaball)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.13 | 2D | [Metaball (Sprite)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_Metaball)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022413.gif" width="400" height="300" /></div>
 
 ### SpriteAblation
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.14 | 2D | [图片消融](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_Ablation)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.14 | 2D | [Ablation (Sprite)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_Ablation)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022414.gif" width="400" height="300" /></div>
 
 ### Sprite2DLight
@@ -136,7 +136,7 @@ Cocos Creator v3.6.x
 ### DrawCard
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.16 | 2D | [摸牌](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_DrawCard)  | 3.6.0 | [Back To Top](#2d) | Middle Level | Empty |
+| 1.16 | 2D | [Draw Card (Sprite)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_DrawCard)  | 3.6.0 | [Back To Top](#2d) | Middle Level | Empty |
 <div align=center><img src="./gif/202202/2022022422.gif" width="400" height="300" /></div>
 
 ### ButtonAmbilight

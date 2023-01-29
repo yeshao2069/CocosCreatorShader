@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **渐变过渡的相册** 工程。
+**Gradual Transitional Album** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202202/2022022408.gif)

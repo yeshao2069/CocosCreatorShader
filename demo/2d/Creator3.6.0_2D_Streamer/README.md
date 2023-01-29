@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **镜面光泽** 工程。
+**Streamer (Sprite)** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202202/2022022410.gif)

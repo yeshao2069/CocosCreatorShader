@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **马赛克** 工程。
+**Mosaic (Sprite)** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202202/2022022409.gif)
