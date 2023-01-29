@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **动态光影** 工程。
+**Dynamic Light And Shadow** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202202/2022022432.gif)

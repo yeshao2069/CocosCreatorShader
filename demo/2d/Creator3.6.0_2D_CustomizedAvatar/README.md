@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **自定义头像** 工程。
+**Customized Avatar** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../image/202202/2022022501.jpeg)

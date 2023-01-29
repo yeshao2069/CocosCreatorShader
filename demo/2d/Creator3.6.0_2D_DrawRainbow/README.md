@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **彩虹** 工程。
+**Draw Rainbow** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../image/202202/2022022411.png)

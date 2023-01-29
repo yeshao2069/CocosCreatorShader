@@ -10,10 +10,10 @@ Cocos Creator v3.6.x
 | :---: | :--- | :---: | :--- | :---: | :--- | :---: | :--- |
 | 1 | [Flash Light](#flashlight) | 2 | [Hit White](#hitwhite) | 3 | [Glow Inner (Sprite)](#glowinner) | 4 | [Gaussian Blur](#gaussianblur) |
 | 5 | [Circle Avatar (Sprite)](#circleavatar) | 6 | [Dissolve (Sprite)](#spritedissolve) | 7 | [Sprite Filter](#spritefilter) | 8 | [Gradual Transitional Album](#gradualtransitionalalbum) |
-| 9 | [Mosaic (Sprite)](#spritemosaic) | 10 | [Streamer (Sprite)](#spritestreamer) | 11 | [Water Spread](#waterspread) | 12 | [Flolow Spot](#followspot) |
+| 9 | [Mosaic (Sprite)](#spritemosaic) | 10 | [Streamer (Sprite)](#spritestreamer) | 11 | [Water Spread](#waterspread) | 12 | [Follow Spot](#followspot) |
 | 13 | [Metaball (Sprite)](#metaball) | 14 | [Ablation (Sprite)](#spriteablation) | 15 | [2D Light (Sprite)](#sprite2dlight) | 16 | [Draw Card (Sprite)](#drawcard) |
-| 17 | [按钮流光](#buttonambilight) | 18 | [彩虹](#spritedrawrainbow) | 19 | [动态光影](#spritedynamiclightandshadow) | 20 | [图片高亮](#spritehighlight) |
-| 21 | [大风吹](#windblowingthrough2d) | 22 | [自定义头像](#spriteradiusshader) | 23 | [加载](#spriteloading) | 24 | [波浪](#spritewave) |
+| 17 | [Button Ambilight](#buttonambilight) | 18 | [Draw Rainbow](#spritedrawrainbow) | 19 | [Dynamic Light And Shadow](#spritedynamiclightandshadow) | 20 | [High Light (Sprite)](#spritehighlight) |
+| 21 | [Wind Blowing (Sprite)](#windblowingthrough2d) | 22 | [Customized Avatar](#spriteradiusshader) | 23 | [Loading (Sprite)](#spriteloading) | 24 | [Wave (Sprite)](#spritewave) |
 | 25 | [曲线波浪](#spritesinewave) | 26 | [Glow Inner (Sprite) ver2](#glowinnerv2) | 27 | [加载2](#loadingstyle) | 28 | [UI外发光](#glowoutter) |
 | 29 | [2D火焰描边](#firestroke) | 30 | [循环隧道](#looptunnel) | 31 | [转场动画](#transition) | 32 | [满月与星光](#moonstar) |
 | 33 | [箭头引导线](#arrowguideline) | 34 | [Empty限滚动背景](#movingbackground) | 35 | [方形进度加载](#rectdraw) | 36 | [河面](#river) |
@@ -112,7 +112,7 @@ Cocos Creator v3.6.x
 ### FollowSpot
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.12 | 2D | [Flolow Spot](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_FollowSpot)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.12 | 2D | [Follow Spot](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_FollowSpot)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022412.gif" width="400" height="300" /></div>
 
 ### Metaball
@@ -142,49 +142,49 @@ Cocos Creator v3.6.x
 ### ButtonAmbilight
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.17 | 2D | [按钮流光](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_ButtonAmbilight)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.17 | 2D | [Button Ambilight](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_ButtonAmbilight)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022431.gif" width="400" height="300" /></div>
 
 ### SpriteDrawRainbow
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.18 | 2D | [彩虹](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_DrawRainbow)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.18 | 2D | [Draw Rainbow](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_DrawRainbow)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./image/202202/2022022411.png" width="400" height="300" /></div>
 
 ### SpriteDynamicLightAndShadow
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.19 | 2D | [动态光影](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_DynamicLightAndShadow)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.19 | 2D | [Dynamic Light And Shadow](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_DynamicLightAndShadow)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022432.gif" width="400" height="300" /></div>
 
 ### SpriteHighLight
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.20 | 2D | [图片高亮](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_HighLight)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.20 | 2D | [High Light (Sprite)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_HighLight)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022501.gif" width="400" height="300" /></div>
 
 ### WindBlowingThrough2D
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.21 | 2D | [植物受风摆动](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_WindBlowing)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.21 | 2D | [Wind Blowing (Sprite)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_WindBlowing)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022503.gif" width="400" height="300" /></div>
 
 ### SpriteRadiusShader
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.22 | 2D | [自定义头像](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_CustomizedAvatar)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.22 | 2D | [Customized Avatar](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_CustomizedAvatar)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./image/202202/2022022501.jpeg" width="400" height="300" /></div>
 
 ### SpriteLoading
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.23 | 2D | [加载](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_Loading)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.23 | 2D | [Loading (Sprite)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_Loading)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022401.gif" width="400" height="300" /></div>
 
 ### SpriteWave
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.24 | 2D | [波浪](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_Sprite_Wave)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.24 | 2D | [Wave (Sprite)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_Sprite_Wave)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022504.gif" width="400" height="300" /></div>
 
 ### SpriteSineWave
