@@ -1,7 +1,7 @@
-### 简介
+### Introduction
 基于 CocosCreator 3.6.0 版本创建的 **转场动画** 工程。
 
-### 相关链接
+### Related Links
 http://store.cocos.com/app/detail/3796
 
 ### 功能支持

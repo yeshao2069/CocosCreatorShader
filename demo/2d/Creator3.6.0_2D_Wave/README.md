@@ -1,7 +1,7 @@
-### 简介
+### Introduction
 基于 CocosCreator 3.6.0 版本创建的 **波浪** 工程。
 
-### 效果预览
+### Preview
 ![image](../../../gif/202202/2022022504.gif)
 
 ### Mark

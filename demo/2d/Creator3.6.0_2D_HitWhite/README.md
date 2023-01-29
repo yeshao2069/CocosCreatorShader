@@ -1,10 +1,10 @@
-### 简介
+### Introduction
 基于 CocosCreator 3.6.0 版本创建的 **受击闪白** 工程。
 
-### 效果预览
+### Preview
 ![image](../../../gif/202202/2022022404.gif)
 
-### 相关链接
+### Related Links
 https://forum.cocos.org/t/topic/101777
 
 ### 功能支持

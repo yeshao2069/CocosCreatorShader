@@ -1,10 +1,10 @@
-### 简介
+### Introduction
 基于 CocosCreator 3.6.2 版本创建的 **后处理效果-SSR** 工程。
 
-### 效果预览
+### Preview
 ![image](../../../gif/202211/2022110801.gif)
 
-### 相关链接 
+### Related Links 
 https://github.com/congzhiwei1994/_refExample/tree/main/_urp/URP_SSR    
 https://forum.cocos.org/t/topic/140525
 

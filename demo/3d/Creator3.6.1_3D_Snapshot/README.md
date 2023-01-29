@@ -1,10 +1,10 @@
-### 简介
+### Introduction
 基于 CocosCreator 3.6.1 版本创建的 **屏幕后处理特效** 工程。
 
-### 效果预览
+### Preview
 ![image](../../../gif/202210/2022101001.gif)
 
-### 相关链接 
+### Related Links 
 https://forum.cocos.org/t/topic/128746
 
 ### 功能支持

@@ -1,7 +1,7 @@
-### 简介
+### Introduction
 基于 CocosCreator 3.6.0 版本创建的 **ShaderBook特效** 工程。
 
-### 效果预览
+### Preview
 <div align=center><img src="../../../image/202207/2022070801.png" width="300" height="300" /></div>
  
 ---
@@ -109,6 +109,6 @@
 <div align=center><img src="../../../image/202207/2022070827.png" width = "300" height="300" /></div>
 
 
-### 相关链接
+### Related Links
 https://github.com/foupwang/ShadersBookForCocosCreator (creator 2.1.3)    
 https://thebookofshaders.com/    
