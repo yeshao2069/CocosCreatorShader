@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **圆形头像** 工程。
+**Circle Avatar (Sprite)** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../image/202202/2022022401.png)

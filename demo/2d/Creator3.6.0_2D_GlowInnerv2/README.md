@@ -1,5 +1,5 @@
 ### Introduction
-基于 CocosCreator 3.6.0 版本创建的 **2D内发光 增强** 工程。
+**Glow Inner (Sprite) ver2** project created based on CocosCreator version 3.6.0
 
 ### Preview
 ![image](../../../gif/202204/2022043001.gif)

@@ -7,7 +7,7 @@
 ### Related Links 
 https://forum.cocos.org/t/topic/128746
 
-### 功能支持
+### Support
 - None
 - Silhouette
 - Painting

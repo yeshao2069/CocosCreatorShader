@@ -8,7 +8,7 @@
 https://forum.cocos.org/t/topic/92667    
 https://forum.cocos.org/t/creator-2-0-shader/64755
 
-### 功能支持
+### Support
 - 老照片
 - 置灰
 - 冰冻

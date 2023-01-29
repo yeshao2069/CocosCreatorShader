@@ -4,7 +4,7 @@
 ### Related Links
 http://store.cocos.com/app/detail/3796
 
-### 功能支持
+### Support
 - 支持 center-split 中心分离    
 ![image](../../../gif/202206/2022061301.gif)
 

@@ -8,13 +8,13 @@ Cocos Creator v3.6.x
 ### 2D
 | NO1 | Proj1 | NO2 | Proj2 | NO3 | Proj3 | NO4 | Proj4 |
 | :---: | :--- | :---: | :--- | :---: | :--- | :---: | :--- |
-| 1 | [Flash Light](#flashlight) | 2 | [受击闪白](#hitwhite) | 3 | [UI内发光](#glowinner) | 4 | [高斯模糊](#gaussianblur) |
-| 5 | [圆形头像](#circleavatar) | 6 | [图片溶解](#spritedissolve) | 7 | [图片特效合集](#spritefilter) | 8 | [渐变过渡的相册](#gradualtransitionalalbum) |
-| 9 | [马赛克](#spritemosaic) | 10 | [镜面光泽](#spritestreamer) | 11 | [水面波纹](#waterspread) | 12 | [灯光跟随](#followspot) |
+| 1 | [Flash Light](#flashlight) | 2 | [Hit White](#hitwhite) | 3 | [Glow Inner (Sprite)](#glowinner) | 4 | [Gaussian Blur](#gaussianblur) |
+| 5 | [Circle Avatar (Sprite)](#circleavatar) | 6 | [Dissolve (Sprite)](#spritedissolve) | 7 | [图片特效合集](#spritefilter) | 8 | [渐变过渡的相册](#gradualtransitionalalbum) |
+| 9 | [马赛克](#spritemosaic) | 10 | [镜面光泽](#spritestreamer) | 11 | [水面波纹](#waterspread) | 12 | [Flolow Spot](#followspot) |
 | 13 | [融球](#metaball) | 14 | [图片消融](#spriteablation) | 15 | [2D Light (Sprite)](#sprite2dlight) | 16 | [摸牌](#drawcard) |
 | 17 | [按钮流光](#buttonambilight) | 18 | [彩虹](#spritedrawrainbow) | 19 | [动态光影](#spritedynamiclightandshadow) | 20 | [图片高亮](#spritehighlight) |
 | 21 | [大风吹](#windblowingthrough2d) | 22 | [自定义头像](#spriteradiusshader) | 23 | [加载](#spriteloading) | 24 | [波浪](#spritewave) |
-| 25 | [曲线波浪](#spritesinewave) | 26 | [UI内发光2](#glowinnerv2) | 27 | [加载2](#loadingstyle) | 28 | [UI外发光](#glowoutter) |
+| 25 | [曲线波浪](#spritesinewave) | 26 | [Glow Inner (Sprite) ver2](#glowinnerv2) | 27 | [加载2](#loadingstyle) | 28 | [UI外发光](#glowoutter) |
 | 29 | [2D火焰描边](#firestroke) | 30 | [循环隧道](#looptunnel) | 31 | [转场动画](#transition) | 32 | [满月与星光](#moonstar) |
 | 33 | [箭头引导线](#arrowguideline) | 34 | [Empty限滚动背景](#movingbackground) | 35 | [方形进度加载](#rectdraw) | 36 | [河面](#river) |
 | 37 | [卡牌透视](#cardperspective) | 38 | [情人节](#valentineday) | 39 | [迷人的色彩](#amazingcolor) | 40 | [迷恋](#obsession) |
@@ -52,31 +52,31 @@ Cocos Creator v3.6.x
 ### HitWhite
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.2 | 2D | [受击闪白](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_HitWhite)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.2 | 2D | [Hit White](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_HitWhite)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022404.gif" width="400" height="300" /></div>
 
 ### GlowInner
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.3 | 2D | [UI内发光](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_GlowInner) | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.3 | 2D | [Glow Inner (Sprite)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_GlowInner) | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022405.gif" width="400" height="300" /></div>
 
 ### GaussianBlur
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.4 | 2D | [高斯模糊](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_GaussianBlur)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.4 | 2D | [Gaussian Blur](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_GaussianBlur)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022406.gif" width="400" height="300" /></div>
 
 ### CircleAvatar
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.5 | 2D | [圆形头像](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_CircleAvatar)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.5 | 2D | [Circle Avatar (Sprite)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_CircleAvatar)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./image/202202/2022022401.png" width="400" height="300" /></div>
 
 ### SpriteDissolve
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.6 | 2D | [图片溶解](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_Dissolve)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.6 | 2D | [Dissolve (Sprite)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_Dissolve)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022407.gif" width="400" height="300" /></div>
 
 ### SpriteFilter
@@ -112,7 +112,7 @@ Cocos Creator v3.6.x
 ### FollowSpot
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.12 | 2D | [灯光跟随](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_FollowSpot)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.12 | 2D | [Flolow Spot](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_FollowSpot)  | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202202/2022022412.gif" width="400" height="300" /></div>
 
 ### Metaball
@@ -196,7 +196,7 @@ Cocos Creator v3.6.x
 ### GlowInnerV2
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1.26 | 2D | [UI内发光2](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_GlowInnerv2) | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
+| 1.26 | 2D | [Glow Inner (Sprite) ver2](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.6.x/demo/2d/Creator3.6.0_2D_GlowInnerv2) | 3.6.0 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202204/2022043001.gif" width="400" height="300" /></div>
 
 ### LoadingStyle

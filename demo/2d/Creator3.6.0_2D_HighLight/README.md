@@ -4,7 +4,7 @@
 ### Preview
 ![image](../../../gif/202202/2022022501.gif)
 
-### 功能支持
+### Support
 - 支持 Sprite
 - 支持 Spine
 - 支持 DragonBones
