@@ -1,8 +1,8 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **图片边缘发光** 工程。
+### Introduction
+**Edge High Light** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../image/202209/2022092301.jpg)
 
-### 相关链接
+### Related Links
 https://forum.cocos.org/t/topic/101961

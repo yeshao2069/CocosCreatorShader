@@ -1,8 +1,8 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **Cocos启动页** 工程。
+### Introduction
+**Label Cocos** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../image/202211/2022110801.jpeg)
 
-### 相关链接
+### Related Links
 https://www.shadertoy.com/view/ttfyzn

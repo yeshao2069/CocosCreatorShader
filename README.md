@@ -256,13 +256,13 @@ Cocos Creator v3.7.x
 ### ModelInnerGlow
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 2.6 | 3D | [Glow Inner (Model)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.7.x/demo/3d/Creator3.7.0_3D_ModelInnerGlow) | 3.7.0 | [Back To Top](#3d) | Low Level | 需为胶囊体 |
+| 2.6 | 3D | [Glow Inner (Model)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.7.x/demo/3d/Creator3.7.0_3D_ModelInnerGlow) | 3.7.0 | [Back To Top](#3d) | Low Level |  |
 <div align=center><img src="./image/202206/2022062001.png" width="300" height="360" /></div>
 
 ### ModelOutline
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 2.7 | 3D | [Outline (Model)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.7.x/demo/3d/Creator3.7.0_3D_ModelOutline) | 3.7.0 | [Back To Top](#3d) | Low Level | 需为胶囊体 |
+| 2.7 | 3D | [Outline (Model)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.7.x/demo/3d/Creator3.7.0_3D_ModelOutline) | 3.7.0 | [Back To Top](#3d) | Low Level |  |
 <div align=center><img src="./image/202206/2022062002.png" width="300" height="360" /></div>
 
 ### ModelDissolve
@@ -376,13 +376,13 @@ Cocos Creator v3.7.x
 ### SSAO
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 2.26 | 3D | [SSAO](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.7.x/demo/3d/Creator3.7.0_3D_DeferredPipeline_SSAO) | 3.7.0 | [Back To Top](#3d) | Middle Level | 自定义渲染管线 |
+| 2.26 | 3D | [SSAO](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.7.x/demo/3d/Creator3.7.0_3D_DeferredPipeline_SSAO) | 3.7.0 | [Back To Top](#3d) | Middle Level | Custom Render Pipeline |
 <div align=center><img src="./image/202210/2022101701.jpg" width="400" height="300" /></div>
 
 ### SSR
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 2.27 | 3D | [SSR](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.7.x/demo/3d/Creator3.7.0_3D_DeferredPipeline_SSR) | 3.7.0 | [Back To Top](#3d) | Middle Level | 自定义渲染管线 |
+| 2.27 | 3D | [SSR](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.7.x/demo/3d/Creator3.7.0_3D_DeferredPipeline_SSR) | 3.7.0 | [Back To Top](#3d) | Middle Level | Custom Render Pipeline |
 <div align=center><img src="./gif/202211/2022110801.gif" width="400" height="300" /></div>
 
 ### Sonar
@@ -676,7 +676,7 @@ Cocos Creator v3.7.x
 ### Jelly
 | No. | Type | Project | Creator Version | Back To Top | Mode | Mark |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 4.16 | 2D | [Jelly (Sprite)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.7.x/demo/2dP2/Creator3.7.0_2D_Jelly) | 3.7.0 | [Back To Top](#2d) | Low Level | Empty |
+| 4.16 | 2D | [Jelly (Sprite)](https://github.com/yeshao2069/CocosCreatorShader/tree/v3.7.x/demo/2dP2/Creator3.7.1_2D_Jelly) | 3.7.1 | [Back To Top](#2d) | Low Level | Empty |
 <div align=center><img src="./gif/202211/2022111301.gif" width="400" height="300" /></div>
 
 ### LightRays2D

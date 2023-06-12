@@ -1,8 +1,8 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **跳动的小球** 工程。
+### Introduction
+**Dacing Ball** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../gif/202212/2022120701.gif)
 
-### 相关链接
+### Related Links
 https://www.shadertoy.com/view/lsX3WH    

@@ -1,8 +1,8 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **风格化fuji** 工程。
+### Introduction
+**Cloak Of The Underworld** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../gif/202209/2022092301.gif)
 
-### 相关链接
+### Related Links
 https://forum.cocos.org/t/topic/105564

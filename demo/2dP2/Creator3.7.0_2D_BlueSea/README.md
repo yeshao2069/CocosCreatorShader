@@ -1,9 +1,9 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **蓝色大海** 工程。
+### Introduction
+**Blue Sea** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../gif/202212/2022120202.gif)
 
-### 相关链接    
+### Related Links    
 https://www.shadertoy.com/view/Ms2SD1    
 https://forum.cocos.org/t/shader/99677

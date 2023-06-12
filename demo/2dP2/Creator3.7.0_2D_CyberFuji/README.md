@@ -1,8 +1,8 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **风格化fuji** 工程。
+### Introduction
+**Cyber Fuji** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../gif/202208/2022081501.gif)
 
-### 相关链接
+### Related Links
 https://www.shadertoy.com/view/Wt33Wf

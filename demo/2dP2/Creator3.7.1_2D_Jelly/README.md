@@ -1,8 +1,8 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **果冻Q弹效果** 工程。
+### Introduction
+**Jelly (Sprite)** project created based on CocosCreator version 3.7.1
 
-### 效果预览
+### Preview
 ![image](../../../gif/202211/2022111301.gif)
 
-### 相关链接
+### Related Links
 https://forum.cocos.org/t/topic/118243
