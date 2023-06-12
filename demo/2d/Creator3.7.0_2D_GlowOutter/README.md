@@ -1,8 +1,8 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **2D外发光** 工程。
+### Introduction
+**Glow Outter (Sprite)** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../gif/202205/2022050101.gif)
 
-### 相关链接
+### Related Links
 https://gitee.com/zhitaocai/CocosCreatorShaderEffectDemo/tree/master/assets/scenes

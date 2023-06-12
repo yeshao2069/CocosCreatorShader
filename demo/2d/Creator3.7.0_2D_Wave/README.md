@@ -1,8 +1,8 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **波浪** 工程。
+### Introduction
+**Wave (Sprite)** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../gif/202202/2022022504.gif)
 
 ### Mark
-Sprite 的 TIELD 模式，从 3.4.1 版本开始，对顶点数量做了限制。大概 3600+ 个顶点数，超过后，会提示 "vb of null" 的提示。修改方式是，将图片的尺寸放大。(尺寸需要使用 2 次幂)
+Sprite's TIELD mode, starting from version 3.4.1, has a limit on the number of vertices. The number of vertices is about 3600+, after that, it will prompt "vb of null". The way to change this is to enlarge the size of the image. (The size needs to use the power of Two)

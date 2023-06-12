@@ -1,9 +1,9 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **彩虹** 工程。
+### Introduction
+**Draw Rainbow** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../image/202202/2022022411.png)
 ![image](../../../image/202202/2022022412.png)
 
-### 相关链接
+### Related Links
 https://forum.cocos.org/t/topic/118989

@@ -1,10 +1,10 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **图片高亮** 工程。
+### Introduction
+**High Light (Sprite)** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../gif/202202/2022022501.gif)
 
-### 功能支持
-- 支持 Sprite
-- 支持 Spine
-- 支持 DragonBones
+### Support
+- Sprite
+- Spine
+- DragonBones

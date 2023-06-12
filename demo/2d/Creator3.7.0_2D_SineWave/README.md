@@ -1,8 +1,8 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **曲线波浪** 工程。
+### Introduction
+**Sine Wave (Sprite)** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../gif/202202/2022022505.gif)
 
-### 相关链接
+### Related Links
 https://gitee.com/ifaswind/eazax-ccc/tree/master/resources/effects

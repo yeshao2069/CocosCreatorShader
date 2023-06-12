@@ -1,5 +1,5 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **植物受风摆动** 工程。
+### Introduction
+**Wind Blowing (Sprite)** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../gif/202202/2022022503.gif)

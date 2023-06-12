@@ -1,16 +1,16 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **图片效果合集** 工程。
+### Introduction
+**Sprite Filter** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../image/202202/2022022402.png)
 
-### 相关链接
+### Related Links
 https://forum.cocos.org/t/topic/92667    
 https://forum.cocos.org/t/creator-2-0-shader/64755
 
-### 功能支持
-- 老照片
-- 置灰
-- 冰冻
-- 反相
-- 动画
+### Support
+- Old Photo
+- Gray
+- Freeze
+- Inverse
+- Cartoon

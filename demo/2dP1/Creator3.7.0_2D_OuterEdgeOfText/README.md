@@ -1,8 +1,8 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **文字边缘** 工程。
+### Introduction
+**Outer Edge Of Text** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../gif/202208/2022080502.gif)
 
-### 相关链接
+### Related Links
 https://www.shadertoy.com/view/WdGSDd

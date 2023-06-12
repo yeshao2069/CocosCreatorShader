@@ -1,5 +1,5 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **2D 高斯模糊** 工程。
+### Introduction
+**Gaussian Blur** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../gif/202202/2022022406.gif)

@@ -1,8 +1,8 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **圆形头像** 工程。
+### Introduction
+**Circle Avatar (Sprite)** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../image/202202/2022022401.png)
 
-### 相关链接
+### Related Links
 https://forum.cocos.org/t/shader/92165

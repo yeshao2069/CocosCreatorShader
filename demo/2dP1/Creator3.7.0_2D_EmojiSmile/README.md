@@ -1,8 +1,8 @@
-### 简介
-基于 CocosCreator 3.7.0 版本创建的 **Emoji风格微笑** 工程。
+### Introduction
+**Emoji Style Smile** project created based on CocosCreator version 3.7.0
 
-### 效果预览
+### Preview
 ![image](../../../image/202207/2022072302.png)
 
-### 相关链接
+### Related Links
 https://blog.csdn.net/a1211545688/article/details/120246900
