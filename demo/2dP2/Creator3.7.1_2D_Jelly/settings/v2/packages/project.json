@@ -1,0 +1,18 @@
+{
+  "__version__": "1.0.4",
+  "fbx": {
+    "legacyFbxImporter": {
+      "visible": true
+    }
+  },
+  "physics": {
+    "defaultMaterial": "a93120a7-9298-4b19-b8ab-cdd2d3c78b38",
+    "gravity": {
+      "y": -5
+    },
+    "collisionMatrix": {
+      "0": 1
+    }
+  },
+  "custom_joint_texture_layouts": []
+}

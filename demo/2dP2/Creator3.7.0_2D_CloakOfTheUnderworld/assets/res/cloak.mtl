@@ -1,0 +1,65 @@
+{
+  "__type__": "cc.Material",
+  "_name": "",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "b52b5059-90c3-49b7-94e4-b16ab4de936e",
+    "__expectedType__": "cc.EffectAsset"
+  },
+  "_techIdx": 0,
+  "_defines": [
+    {
+      "USE_ALPHA_TEST": true,
+      "USE_TEXTURE": true
+    }
+  ],
+  "_states": [
+    {
+      "rasterizerState": {},
+      "depthStencilState": {},
+      "blendState": {
+        "targets": [
+          {}
+        ]
+      }
+    }
+  ],
+  "_props": [
+    {
+      "_AlphaTex": {
+        "__uuid__": "8c7e1c9c-ad6d-4657-b98e-f64b18cf2ec8@6c48a",
+        "__expectedType__": "cc.Texture2D"
+      },
+      "_UvDisTex": {
+        "__uuid__": "310ed760-5d8c-4d20-8e60-5fe4430b00fb@6c48a",
+        "__expectedType__": "cc.Texture2D"
+      },
+      "_UvDisTile": {
+        "__type__": "cc.Vec4",
+        "x": 3,
+        "y": 1,
+        "z": 0,
+        "w": 0.25
+      },
+      "_WaveTex": {
+        "__uuid__": "e1eeab22-1256-40f0-99fe-2b24f3401da0@6c48a",
+        "__expectedType__": "cc.Texture2D"
+      },
+      "_WaveTile": {
+        "__type__": "cc.Vec4",
+        "x": 3,
+        "y": 3,
+        "z": 0,
+        "w": -0.25
+      },
+      "_FireCol": {
+        "__type__": "cc.Color",
+        "r": 51,
+        "g": 2,
+        "b": 247,
+        "a": 255
+      }
+    }
+  ]
+}

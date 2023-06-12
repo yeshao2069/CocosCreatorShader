@@ -1,0 +1,117 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+
+// https://www.shadertoy.com/view/7sKczK
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+
+        resolution: { value: [960, 640] }
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 color;
+  out vec2 uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(uv0);
+    #endif
+    color = a_color;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  #include <builtin/uniforms/cc-global>
+
+  in vec4 color;
+  
+  #pragma define DELAY 0.
+  #pragma define SPEED_MULTIPLIER 0.2
+
+  uniform MXD {
+    vec2 resolution;
+  };
+
+  #if USE_TEXTURE
+    in vec2 uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  vec4 frag () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+      o *= CCSampleWithAlphaSeparated(cc_spriteTexture, uv0);
+    #endif
+
+    vec2 fragCoord = uv0 * resolution;
+    float delayTime = pow(max(mod(cc_time.x, 10.) - DELAY, 0.) * SPEED_MULTIPLIER, 5.);
+
+    vec2 uv = fragCoord / resolution.xy - 0.5;
+    uv *= pow(delayTime * 0.1 + 1.0, 5.);
+    
+    float r = length(uv);
+    
+    float phi = atan(uv.y, uv.x) + delayTime / (r * 0.5);
+       
+    vec2 duv = r * vec2(cos(phi), sin(phi)) + 0.5;
+    
+    vec4 c = CCSampleWithAlphaSeparated(cc_spriteTexture, duv);
+    
+    float m = 1.0;
+    if (duv.x > 1.0 || duv.y > 1.0 || duv.x < 0.0 || duv.y < 0.0) m = 0.0;
+
+    o = c * m;
+
+    return o;
+  }
+}%

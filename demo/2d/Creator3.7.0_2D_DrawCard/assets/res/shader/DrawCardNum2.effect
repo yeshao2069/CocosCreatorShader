@@ -1,0 +1,188 @@
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 v_color;
+  out vec2 v_uv0;
+  out vec4 v_thisPos;
+  out vec4 v_sytrPos;
+
+  #if USE_TEXTURE
+    in vec2 a_uv0;
+  #endif
+
+  uniform PointData {
+    vec2 firstPos;
+    vec2 secondPos;
+    float shadowDis;
+  };
+
+  vec2 getSymmetricPos(vec2 sp, vec2 pos1, vec2 pos2) {
+    float disX = pos2.x - pos1.x;
+    float disY = pos2.y - pos1.y;
+    
+    //获取截线斜率
+    float k1 = disY / disX;
+
+    float y = (sp.y * k1 * k1  + sp.x * k1 + k1 * sp.x - k1 * pos1.x * 2.0 + pos1.y * 2.0 - sp.y) / (1.0 + k1 * k1);
+    float x = (y - sp.y) / (-1.0 / k1) + sp.x;
+
+    return vec2(x, y);
+}
+
+  vec4 vert () {
+    
+    vec4 pos = vec4(a_position, 1.0);
+    v_thisPos = vec4(pos);
+    vec2 pos1 = vec2(firstPos.x + (secondPos.x - firstPos.x) * 0.5 , firstPos.y + (secondPos.y - firstPos.y) * 0.5);
+    vec2 sp = vec2( pos.x, pos.y);
+    if (secondPos.y - firstPos.y == 0.0) {
+      float x = pos1.x - sp.x + pos1.x;
+      if (sp.x > pos1.x) {
+        x = pos1.x - (sp.x - pos1.x);
+      }
+      pos.x = x;
+      pos.y = sp.y;
+    } else {
+      float k = (secondPos.y - firstPos.y) / (secondPos.x - firstPos.x);
+      k = -1.0 / k;
+      float b = pos1.y -  k * pos1.x;
+      vec2 pos2 = vec2(0, b);
+      vec2 symmetricPos = getSymmetricPos(sp, pos1, pos2);
+      pos.x = symmetricPos.x;
+      pos.y = symmetricPos.y;
+    }
+
+    v_sytrPos = vec4(pos);
+
+    //计算不精确的情况下有裂缝,移动1像素来处理
+    if (secondPos.y  < firstPos.y) { //从上往下
+        pos.y = pos.y + 1.0;
+    } else if (secondPos.y > firstPos.y) { //从下往上
+        pos.y = pos.y - 1.0;
+    }
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+      v_uv0 = a_uv0;
+    #endif
+
+    v_color = a_color;
+    v_uv0 = a_texCoord;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+
+  in vec4 v_color;
+  in vec4 v_thisPos;
+  in vec4 v_sytrPos;
+
+  #if USE_TEXTURE
+    in vec2 v_uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  uniform PointData {
+    vec2 firstPos;
+    vec2 secondPos;
+    float shadowDis;
+  };
+
+  // 可以根据两个点来判断是否隐藏坐标
+  bool isHide(){
+    // 如果是左右横向搓牌的情况下
+    if (secondPos.y == firstPos.y) {
+      float xw = (secondPos.x - firstPos.x) * 0.5;
+      if (xw > 0.0 && v_thisPos.x < xw + firstPos.x) {
+        return true;
+      } else if (xw < 0.0 && v_thisPos.x > xw + firstPos.x) {
+        return true;
+      }
+    }
+    // 用直线方程判断点的位置是在y轴的上方还是下方
+    float k = (secondPos.y - firstPos.y) / (secondPos.x - firstPos.x);
+    k = -1.0/k;
+    float b = (firstPos.y + (secondPos.y - firstPos.y) * 0.5) - k* (firstPos.x + (secondPos.x - firstPos.x) * 0.5);
+    float y = k * v_thisPos.x + b;
+    // 从上往下
+    if (secondPos.y < firstPos.y && v_thisPos.y > y) {
+      return true;
+    } else if (secondPos.y > firstPos.y && v_thisPos.y < y) { //从下往上
+      return true;
+    }
+    return false;
+  }
+
+  vec4 frag () {
+    vec4 o = vec4(1, 1, 1, 1);
+    
+    #if USE_TEXTURE
+      o *= CCSampleWithAlphaSeparated(cc_spriteTexture, v_uv0);
+    #endif
+
+    o *= v_color;
+
+    //获取当前点对称距离
+    float disX = v_sytrPos.x - v_thisPos.x;
+    float disY = v_sytrPos.y - v_thisPos.y;
+    float disTCur = sqrt(disX * disX + disY * disY) * 0.5;
+    if (disTCur < shadowDis) {
+      float rgbNum = 0.1;
+      rgbNum = rgbNum + (1.0 - rgbNum) * disTCur / shadowDis;
+      o *= vec4(rgbNum, rgbNum, rgbNum, 1.0);
+    }
+
+    ALPHA_TEST(o);
+
+    if (!isHide()) {
+      o.a = 0.0;
+    }
+
+    return o;
+  }
+}%

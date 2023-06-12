@@ -1,0 +1,146 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        size: { value: [0, 0], editor: { tooltip: "图片尺寸" } }
+        leftTop: { value: [0, 0], editor: { tooltip: "左上角，第一个数为水平方向" } }
+        rightTop: { value: [0, 0], editor: { tooltip: "右上角，第一个数为水平方向" } }
+        rightBottom: { value: [0, 0], editor: { tooltip: "右下角，第一个数为水平方向" } }
+        leftBottom: { value: [0, 0], editor: { tooltip: "左下角，第一个数为水平方向" } }
+}%
+
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 v_color;
+  out vec2 v_uv0;
+
+  #if USE_TEXTURE
+    in vec2 a_uv0;
+  #endif
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+      v_uv0 = a_uv0;
+    #endif
+
+    v_color = a_color;
+    v_uv0 = a_texCoord;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+
+  in vec4 v_color;
+
+  #if USE_TEXTURE
+    in vec2 v_uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  uniform MXD {
+    vec2 size;
+    vec2 leftTop;
+    vec2 rightTop;
+    vec2 rightBottom;
+    vec2 leftBottom;
+  };
+
+  float inEllipse(vec2 origin, float radius_a, float radius_b, vec2 coordinate) {
+    // 转换坐标
+    coordinate.x -= origin.x;
+    coordinate.y -= origin.y;
+    // 圆锥曲线
+    return pow(coordinate.x, 2.0) / pow(radius_a, 2.0) + pow(coordinate.y, 2.0) / pow(radius_b, 2.0);
+  }
+
+  vec4 frag () {
+    vec4 o = vec4(1,1,1,1);
+    o *= CCSampleWithAlphaSeparated(cc_spriteTexture, v_uv0);
+    o *= v_color;
+
+    ALPHA_TEST(o);
+
+    // 转换坐标原点到左下角
+    vec2 uv = vec2(v_uv0.x, 1.0 - v_uv0.y);
+
+    // 转换坐标到实际尺寸大小
+    uv.xy *= size.xy;
+
+    // 处理左上角
+    if(uv.x < leftTop.x && uv.y > size.y - leftTop.y) {
+      if(inEllipse(vec2(leftTop.x, size.y - leftTop.y), leftTop.x, leftTop.y, uv) > 1.0) {
+        o.a = 0.0;
+      };
+    }
+
+    // 右上角
+    if(uv.x > size.x - rightTop.x && uv.y > size.y - rightTop.y) {
+      if(inEllipse(vec2(size.x - rightTop.x, size.y - rightTop.y), rightTop.x, rightTop.y, uv) > 1.0) {
+        o.a = 0.0;
+      };
+    }
+
+    // 右下角
+    if(uv.x > size.x - rightBottom.x && uv.y < rightBottom.y) {
+      if(inEllipse(vec2(size.x - rightBottom.x, rightBottom.y), rightBottom.x, rightBottom.y, uv) > 1.0) {
+        o.a = 0.0;
+      };
+    }
+
+    // 左下角
+    if(uv.x < leftBottom.x && uv.y < leftBottom.y) {
+      if(inEllipse(vec2(leftBottom.x, leftBottom.y), leftBottom.x, leftBottom.y, uv) > 1.0) {
+        o.a = 0.0;
+      };
+    }
+
+    o.a *= v_color.a;
+
+    return o;
+  }
+}%

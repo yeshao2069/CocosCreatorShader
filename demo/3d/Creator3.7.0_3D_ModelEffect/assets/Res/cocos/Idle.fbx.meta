@@ -1,0 +1,120 @@
+{
+  "ver": "2.3.2",
+  "importer": "fbx",
+  "imported": true,
+  "uuid": "60ab8f13-c72c-4046-9333-3f6dd91ce8c3",
+  "files": [
+    "__original-animation-0.cconb"
+  ],
+  "subMetas": {
+    "a865e": {
+      "importer": "gltf-mesh",
+      "uuid": "60ab8f13-c72c-4046-9333-3f6dd91ce8c3@a865e",
+      "displayName": "",
+      "id": "a865e",
+      "name": "cocosfinish_01.mesh",
+      "userData": {
+        "gltfIndex": 0
+      },
+      "ver": "1.1.0",
+      "imported": true,
+      "files": [
+        ".bin",
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "1f586": {
+      "importer": "gltf-animation",
+      "uuid": "60ab8f13-c72c-4046-9333-3f6dd91ce8c3@1f586",
+      "displayName": "",
+      "id": "1f586",
+      "name": "idle.animation",
+      "userData": {
+        "gltfIndex": 0,
+        "wrapMode": 2,
+        "sample": 30,
+        "span": {
+          "from": 0,
+          "to": 2.799999952316284
+        },
+        "events": []
+      },
+      "ver": "1.0.16",
+      "imported": true,
+      "files": [
+        ".cconb"
+      ],
+      "subMetas": {}
+    },
+    "438fe": {
+      "importer": "gltf-skeleton",
+      "uuid": "60ab8f13-c72c-4046-9333-3f6dd91ce8c3@438fe",
+      "displayName": "",
+      "id": "438fe",
+      "name": "UnnamedSkeleton.skeleton",
+      "userData": {
+        "gltfIndex": 0,
+        "jointsLength": 22
+      },
+      "ver": "1.0.1",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "503de": {
+      "importer": "gltf-scene",
+      "uuid": "60ab8f13-c72c-4046-9333-3f6dd91ce8c3@503de",
+      "displayName": "",
+      "id": "503de",
+      "name": "Idle.prefab",
+      "userData": {
+        "gltfIndex": 0
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "imageMetas": [],
+    "legacyFbxImporter": false,
+    "animationImportSettings": [
+      {
+        "name": "mixamo.com",
+        "duration": 2.799999952316284,
+        "fps": 30,
+        "splits": [
+          {
+            "name": "idle",
+            "from": 0,
+            "to": 2.799999952316284,
+            "wrapMode": 2
+          }
+        ]
+      }
+    ],
+    "redirect": "60ab8f13-c72c-4046-9333-3f6dd91ce8c3@503de",
+    "assetFinder": {
+      "meshes": [
+        "60ab8f13-c72c-4046-9333-3f6dd91ce8c3@a865e"
+      ],
+      "skeletons": [
+        "60ab8f13-c72c-4046-9333-3f6dd91ce8c3@438fe"
+      ],
+      "textures": [],
+      "materials": [],
+      "scenes": [
+        "60ab8f13-c72c-4046-9333-3f6dd91ce8c3@503de"
+      ]
+    },
+    "fbx": {
+      "smartMaterialEnabled": false
+    }
+  }
+}

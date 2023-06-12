@@ -1,0 +1,130 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+// References: http://tokyodemofest.jp/2014/7lines/index.html
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+
+        ## 自定义参数   分辨率
+        resolution: { value: [960, 640] }
+}%
+
+CCProgram sprite-vs %{
+  precision mediump float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 color;
+  out vec2 uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(uv0);
+    #endif
+    color = a_color;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  #include <builtin/uniforms/cc-global>
+
+  in vec4 color;
+  in vec2 uv0;
+
+  uniform MXD {
+    vec2 resolution;
+  };
+
+  mat2 rotate2d(float angle) {
+    return mat2(
+      cos(angle), -sin(angle), 
+      sin(angle), cos(angle)
+    );
+  }
+
+  float variation(vec2 v1, vec2 v2, float strength, float speed) {
+    return sin(
+        dot(normalize(v1), normalize(v2)) * strength + cc_time.x * speed
+      ) / 100.0;
+  }
+
+  vec3 paintCircle (vec2 uv, vec2 center, float rad, float width) {
+    vec2 diff = center-uv;
+    float len = length(diff);
+    len += variation(diff, vec2(0.0, 1.0), 5.0, 2.0);
+    len -= variation(diff, vec2(1.0, 0.0), 5.0, 2.0);
+    
+    float circle = smoothstep(rad - width, rad, len) - smoothstep(rad, rad + width, len);
+    return vec3(circle);
+}
+
+  vec4 frag () {
+    vec4 o = vec4(0, 0, 0, 1);
+    
+    vec2 rs = resolution.xy;
+    float time = cc_time.x;
+    
+    vec2 uv = uv0;
+    uv.x *= 1.5;
+    uv.x -= 0.25;
+
+    vec3 color;
+    float radius = 0.35;
+    vec2 center = vec2(0.5);
+
+    // paint color circle
+    color = paintCircle(uv, center, radius, 0.1);
+
+    // color with gradient
+    vec2 v = rotate2d(time) * uv;
+    color *= vec3(v.x, v.y, 0.7 - v.y * v.x);
+
+    color += paintCircle(uv, center, radius, 0.01);
+    float al = 1.;
+    
+    o = vec4(color, al);
+    return o;
+  }
+}%

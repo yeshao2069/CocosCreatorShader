@@ -1,0 +1,82 @@
+{
+  "ver": "2.3.2",
+  "importer": "fbx",
+  "imported": true,
+  "uuid": "ecba9f73-3cce-4557-92fc-bf5c9be7877c",
+  "files": [
+    "__original-animation-0.cconb"
+  ],
+  "subMetas": {
+    "00699": {
+      "importer": "gltf-animation",
+      "uuid": "ecba9f73-3cce-4557-92fc-bf5c9be7877c@00699",
+      "displayName": "",
+      "id": "00699",
+      "name": "damage.animation",
+      "userData": {
+        "gltfIndex": 0,
+        "wrapMode": 1,
+        "sample": 30,
+        "span": {
+          "from": 0,
+          "to": 1.7666666507720947
+        },
+        "events": []
+      },
+      "ver": "1.0.16",
+      "imported": true,
+      "files": [
+        ".cconb"
+      ],
+      "subMetas": {}
+    },
+    "e5589": {
+      "importer": "gltf-scene",
+      "uuid": "ecba9f73-3cce-4557-92fc-bf5c9be7877c@e5589",
+      "displayName": "",
+      "id": "e5589",
+      "name": "Damage.prefab",
+      "userData": {
+        "gltfIndex": 0
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "imageMetas": [],
+    "legacyFbxImporter": false,
+    "animationImportSettings": [
+      {
+        "name": "mixamo.com",
+        "duration": 1.7666666507720947,
+        "fps": 30,
+        "splits": [
+          {
+            "name": "damage",
+            "from": 0,
+            "to": 1.7666666507720947,
+            "wrapMode": 1
+          }
+        ]
+      }
+    ],
+    "redirect": "ecba9f73-3cce-4557-92fc-bf5c9be7877c@e5589",
+    "assetFinder": {
+      "meshes": [],
+      "skeletons": [],
+      "textures": [],
+      "materials": [],
+      "scenes": [
+        "ecba9f73-3cce-4557-92fc-bf5c9be7877c@e5589"
+      ]
+    },
+    "fbx": {
+      "smartMaterialEnabled": false
+    }
+  }
+}

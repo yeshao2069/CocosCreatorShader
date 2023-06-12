@@ -1,0 +1,141 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+        
+        _AlphaTex: { value: white }     # 遮罩图
+        _UvDisTex: { value: white }     # uv偏移图
+        _UvDisTile: { value: [1.0, 1.0, 1.0, 1.0]}   # 控制uv偏移图的缩放和偏移
+        _UvDisBgTile: { value: [1.0, 1.0, 1.0, 1.0]}   # 控制uv偏移图的缩放和偏移
+        _UvDisPow: { value : 0.3 }      # 控制uv偏移图的强度
+        _WaveTex: { value: white }      # 火焰流光图             
+        _WaveTile: { value: [1.0, 1.0, 1.0, 1.0]}    # 控制火焰流光图的缩放和偏移
+        _WaveBgTile: { value: [1.0, 1.0, 1.0, 1.0]}    # 控制背景流光图的缩放和偏移
+        _FireCol: { value: [1.0, 1.0, 1.0, 1.0], editor : { type : color }}   # 控制火焰颜色
+        _FireBgCol: { value: [1.0, 1.0, 1.0, 1.0], editor : { type : color }}   # 控制背景颜色
+        _LightCol: { value: [1.0, 1.0, 1.0, 1.0], editor : { type : color }}   # 控制流光颜色
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 color;
+  out vec2 uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(uv0);
+    #endif
+    color = a_color;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  #include <cc-global>
+
+  in vec4 color;
+
+  #if USE_TEXTURE
+    in vec2 uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  uniform sampler2D _AlphaTex; //uniform规则是图片要单独拎出来声明
+  uniform sampler2D _UvDisTex;
+  uniform sampler2D _WaveTex;
+  uniform suibianqu{            
+    vec4 _UvDisTile;          
+    vec4 _WaveTile;
+    vec4 _FireCol;
+    vec4 _FireBgCol;
+    vec4 _LightCol;
+    vec4 _UvDisBgTile;
+    vec4 _WaveBgTile;
+    float _UvDisPow;
+  };
+
+  vec4 frag () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+      o *= CCSampleWithAlphaSeparated(cc_spriteTexture, uv0);
+      #if IS_GRAY
+        float gray  = 0.2126 * o.r + 0.7152 * o.g + 0.0722 * o.b;
+        o.r = o.g = o.b = gray;
+      #endif
+    #endif
+    
+    o *= color;
+    
+    #if USE_TEXTURE
+      o = texture(cc_spriteTexture, uv0);
+    #endif
+    vec4 AlphaCol = texture(_AlphaTex, uv0); //采样获得遮罩贴图
+
+    // 衣摆上的火焰
+    vec4 UvDisCol = texture(_UvDisTex, uv0 * _UvDisTile.xy + cc_time.x * _UvDisTile.zw);  //采样获得uv偏移贴图，并让它随着时间移动
+    vec2 NewUV = uv0 + UvDisCol.xy * _UvDisPow;  //根据采样获得uv偏移贴图，乘以一个强度值，生成一个新的uv用于采样流光贴图
+    vec4 WaveCol = texture(_WaveTex, NewUV * _WaveTile.xy + cc_time.x * _WaveTile.zw);  //根据新的uv采样流光贴图，并让它随着时间移动
+    vec4 FinalFireCol = AlphaCol.g * WaveCol * _FireCol;   //用最后的结果乘以遮罩的g通道，把结果限制在披风的区域
+
+    //流光
+    vec4 Finallight = _LightCol * AlphaCol.r * pow(abs((fract(uv0.x - cc_time.x + 0.5) - 0.5) * 2.0), 10.0);  //计算金属流光的颜色
+
+    //背景上的火焰
+    vec4 UvDisBgCol = texture(_UvDisTex, uv0 * _UvDisBgTile.xy + cc_time.x * _UvDisBgTile.zw);  //采样获得uv偏移贴图，并让它随着时间移动
+    vec2 NewBgUV = uv0 + UvDisBgCol.xy * _UvDisPow;  //根据采样获得uv偏移贴图，乘以一个强度值，生成一个新的uv用于采样流光贴图
+    vec4 WaveBgCol = texture(_WaveTex, NewBgUV * _WaveBgTile.xy + cc_time.x * _WaveBgTile.zw);  //根据新的uv采样流光贴图，并让它随着时间移动
+    vec4 FinalFireBgCol = 2.0 * AlphaCol.b * WaveBgCol * _FireBgCol;   //用最后的结果乘以遮罩的g通道，把结果限制在披风的区域
+
+    o = o + FinalFireCol + Finallight + FinalFireBgCol;
+
+    ALPHA_TEST(o);
+    return o;
+  }
+}%

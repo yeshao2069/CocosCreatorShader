@@ -1,0 +1,125 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+// References: http://tokyodemofest.jp/2014/7lines/index.html
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+
+        ## 自定义参数   分辨率
+        resolution: { value: [960, 640] }
+}%
+
+CCProgram sprite-vs %{
+  precision mediump float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 color;
+  out vec2 uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(uv0);
+    #endif
+    color = a_color;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  #include <builtin/uniforms/cc-global>
+
+  in vec4 color;
+  in vec2 uv0;
+
+  #pragma define M_PI 3.1415926535897932384626433832795
+
+  uniform MXD {
+    vec2 resolution;
+  };
+
+  float rand(vec2 co) {
+    return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
+  }
+
+  vec4 frag () {
+    vec4 o = vec4(0, 0, 0, 1);
+
+    vec2 uv = uv0.xy;
+    vec2 rs = resolution.xy;
+    float time = cc_time.x;
+    
+    float size = 30.0;
+	  float prob = 0.95;
+	
+	  vec2 pos = floor(1.0 / size * rs * uv);
+	
+	  float color = 0.0;
+    float g = .0;
+    float b = .0;
+	  float starValue = rand(pos);
+	
+    if (starValue > prob) {
+      vec2 center = size * pos + vec2(size, size) * 0.5;
+      float t = 0.9 + .9 * sin(.3 * time) * sin(time + (starValue - prob) / (1.0 - prob) * 45.0);
+          
+      color = 1.0 - distance(rs * uv, center) / (0.5 * size);
+      color = color * t / (abs(rs.y * uv.y - center.y)) * t / (abs(rs.x * uv.x - center.x));
+      b = color * sin(t) * t;
+      g = color * t;
+    }
+    else if (rand(rs * uv / resolution.xy) > 0.996) {
+      float r = rand(rs * uv);
+      color = r * (0.35 * sin(time * (r * 5.0) + 720.0 * r) + 0.75);
+      g = r * (0.35 * sin(time * (r * 5.0) + 720.0 * r) + 0.75);
+      b = r * (0.35 * sin(time * (r * 5.0) + 720.0 * r) + 0.75);
+    }
+
+    o = vec4(vec3(color, g, b), 1.0);
+   
+    ALPHA_TEST(o);
+    
+    return o;
+  }
+}%

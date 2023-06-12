@@ -1,0 +1,184 @@
+t// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+        Color1: {value: [0.3,0.5,0.6,1.0], editor: { type: color } }
+        Color2: {value: [0.41,1.0,1.0,1.0], editor: { type: color } }
+        Speed: {value: 0.37, editor: {range: [0, 5.0, 0.01], slide: true}}
+        Size: {value: 18.1, editor: {range: [1.0, 30.0, 0.01], slide: true}}
+        Skew: {value: 0.36, editor: {range: [-1.0, 1.0, 0.01], slide: true}}
+        Shear: {value: 1.0, editor: {range: [0.0, 5.0, 0.01], slide: true}}
+        Fade: {value: 0.0, editor: {range: [0.0, 1.0, 0.01], slide: true}}
+        Constrast: {value: 1.0, editor: {range: [0.0, 50.0, 0.01], slide: true}} 
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 color;
+  out vec2 uv0;
+
+  vec4 vert () {
+
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(uv0);
+    #endif
+    color = a_color;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  in vec4 color;
+  #define DIV_289 0.00346020761245674740484429065744
+  #define REPEAT_Y 1000.0
+  uniform LIGHTCOLOR{
+    vec4 Color1;
+    vec4 Color2;
+  };
+  uniform ARGS{
+    float Speed;
+    float Size;
+    float Skew;
+    float Shear;
+    float Fade;
+    float Constrast;
+   
+  };
+
+  float permute(float x){
+    return mod(34.0 * pow(x,2.0), 289.0);
+  }
+
+  float fade(float t){
+    return 6.0 * pow(t,5.0) - 15.0 * pow(t,4.0) + 10.0 * pow(t,3.0);
+  }
+
+  vec4 taylorInvSqrt(vec4 r){
+    return 1.79284291400159 - 0.85373472095314 * r;
+  }
+
+  float mod289(float x){
+    return x - floor(x * DIV_289) * 289.0;
+  }
+  float perlineNoise2D(vec2 p){
+    if(floor(p.y / REPEAT_Y)/2.0 > 0.0 && floor(p.y / REPEAT_Y)/2.0 < 0.0){
+      p.y -= floor(p.y / REPEAT_Y) * REPEAT_Y;
+       p.y = REPEAT_Y - p.y;
+    }else{
+      p.y -= floor(p.y / REPEAT_Y) * REPEAT_Y;
+      // p.y = REPEAT_Y - p.y;
+    }
+    // vec4 pi = vec4(floor(p.x), floor(p.x), floor(p.y), floor(p.y)) + vec4(0.0, 0.0, 1.0, 1.0);
+     vec4 pi = vec4(floor(p.x), floor(p.y), floor(p.x)+1.0, floor(p.y)+1.0);
+
+    // vec4 pf = vec4(fract(p.y), fract(p.y), fract(p.x), fract(p.x)) - vec4(0.0, 0.0, 1.0, 1.0);
+     vec4 pf = vec4(fract(p.x), fract(p.y), fract(p.x)-1.0, fract(p.y)-1.0);
+
+    vec4 ix = vec4(pi.x, pi.z, pi.x, pi.z);
+    vec4 iy = vec4(pi.y, pi.y, pi.w, pi.w);
+    vec4 fx = vec4(pf.x, pf.z,pf.x,pf.z);
+    vec4 fy = vec4(pf.y, pf.y,pf.w,pf.w);
+    vec4 iv = vec4(permute(ix.x),permute(ix.y),permute(ix.z),permute(ix.w));
+    vec4 iw = iv + iy;
+    vec4 i = vec4(permute(iw.x),permute(iw.y),permute(iw.z),permute(iw.w));
+    vec4 gx = vec4(fract(i.x / 41.0),fract(i.y / 41.0),fract(i.z / 41.0),fract(i.w / 41.0)) * 2.0 - 1.0;
+    vec4 gy = vec4(abs(gx.x),abs(gx.y),abs(gx.z),abs(gx.w)) - 0.5;
+    vec4 tx = vec4(floor(gx.x+0.5), floor(gx.y+0.5), floor(gx.z+0.5), floor(gx.w+0.5));
+    gx = gx - tx;
+    vec2 g00 = vec2(gx.x, gy.x);
+    vec2 g10 = vec2(gx.y, gy.y);
+    vec2 g01 = vec2(gx.z, gy.z);
+    vec2 g11 = vec2(gx.w, gy.w);
+    vec4 norm = taylorInvSqrt(vec4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11)));
+    g00 *= norm.x;
+    g01 *= norm.y;
+    g10 *= norm.z;
+    g11 *= norm.w;
+    float n00 = dot(g00, vec2(fx.x, fy.x));
+    float n10 = dot(g10, vec2(fx.y, fy.y));
+    float n01 = dot(g01, vec2(fx.z, fy.z));
+    float n11 = dot(g11, vec2(fx.w, fy.w));
+    vec2 fade_xy = vec2(fade(pf.x),fade(pf.y));
+    vec2 n_x = mix(vec2(n00, n01), vec2(n10, n11), fade_xy.x);
+    // vec2 n_x =(1.0 - fade_xy.x)*vec2(n00, n01) + vec2(n10, n11) * fade_xy.x;
+
+    float n_xy = (1.0-fade_xy.y)*n_x.x +n_x.y*fade_xy.y;
+    return 2.3 * n_xy;
+  }
+  #if USE_TEXTURE
+    in vec2 uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+  float lerp(float a,float b, float f){
+    return (1.0-f)*a + b*f;
+  }
+
+  vec4 frag () {
+    vec4 col = mix(Color1,Color2,1.0-uv0.y);
+    // vec4 col = mix(Color1,Color2,uv0.y - 1.0);
+    float noisePos = uv0.x;
+    noisePos += -0.5;
+    noisePos *= Size;
+    noisePos += (1.0 - uv0.y) * (Size * Skew); 
+    // noisePos += (uv0.y-1.0) * (Size * Skew); 
+    noisePos *=1.0/mix(1.0, Shear, 1.0 - uv0.y);
+    // noisePos *= 1.0 / mix(1.0, Shear, uv0.y - 1.0);
+    float val = perlineNoise2D(vec2(noisePos, cc_time.x * Speed)) / 2.0 + 0.5;
+    val = Constrast * (val - 0.5) + 0.5;
+    // col.a *= (1.0-Fade)*val+(val * uv0.y)*Fade;
+    col.a *= mix(val,val*uv0.y,Fade);
+
+    // col.a = clamp(col.a,0.0,1.0) *col.a;
+    col.a = smoothstep(0.0,1.0,col.a);
+;
+    return col;
+  }
+}%

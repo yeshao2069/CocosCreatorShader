@@ -1,0 +1,281 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+        # triangleStartPoint: { value: [1.0, .0, .0, .0] }
+        # triangleNewPoint: { value: [1.0, .0, .0, .0] }
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 color;
+  out vec2 uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(uv0);
+    #endif
+    color = a_color;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  #include <builtin/uniforms/cc-global>
+
+  in vec4 color;
+
+  uniform pos {
+    vec4 triangleStartPoint[108];
+    vec4 triangleNewPoint[108];
+  };
+
+  int trigangleNum = 8;//8 个三角形
+
+
+  // 向量的叉乘
+  float vectorPro(vec4 v1, vec4 v2) {
+    return v1.x * v2.y - v1.y * v2.x;
+  }
+
+  // 用位运算高效判断符号相同
+  bool sameSign(float a, float b) {
+    if ((a<=0.0 && b<=0.0) || (a>=0.0 && b>=0.0)) {
+        return true;
+    } else {
+        return false;
+    }
+  }
+
+  // 判断点是否在三角形内
+  bool pointinTriangle(vec4 A, vec4 B, vec4 C, vec2 uv) {
+    vec4 P = vec4(uv.x, uv.y, 0, 0);
+    vec4 pa = P - A;
+    vec4 pb = P - B;
+    vec4 pc = P - C;
+
+    float t1 = vectorPro(pa, pb);
+    float t2 = vectorPro(pb, pc);
+    float t3 = vectorPro(pc, pa);
+
+    return sameSign(t1, t2) && sameSign(t2, t3);
+  }
+
+  //求三角形面积
+  float askArea(vec4 A, vec4 B, vec4 C) {
+    float a = length(B - A);
+    float b = length(C - B);
+    float c = length(A - C);
+    float p = (a + b + c) / 2.;
+    float s = sqrt(p * (p - a) * (p - b) * (p - c));
+    return s;
+  }
+
+  //求k值， 得知三角形内任意一点可表示为P = k1 * A + k2 * B + k3 * C，且k1 + k2 + k3 = 1.
+  vec3 askKValue(vec4 A, vec4 B, vec4 C, vec2 uv, float abcArea) {
+    vec4 P = vec4(uv.x, uv.y, 0., 0.);
+    float k1 = askArea(B, C, P) / abcArea;
+    float k2 = askArea(A, C, P) / abcArea;
+    float k3 = askArea(A, B, P) / abcArea;
+    // float k3 = 1.0 - k1 - k2;
+    return vec3(k1, k2, k3);
+  }
+
+  //映射点
+  vec2 mappingPoint(vec2 uv, vec4 A, vec4 B, vec4 C, vec4 A1, vec4 B1, vec4 C1) {
+    float abcArea = askArea(A, B, C);
+    vec3 k = askKValue(A, B, C, uv, abcArea);
+    vec4 p = k.x * A1 + k.y * B1 + k.z * C1;
+    return vec2(p.xy);
+  }
+
+  #if USE_TEXTURE
+    in vec2 uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 10) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  vec4 frag () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+
+      vec2 uv = uv0.xy;
+
+      if (pointinTriangle(triangleNewPoint[0], triangleNewPoint[1], triangleNewPoint[2], uv)) {
+        uv = mappingPoint(uv, triangleNewPoint[0], triangleNewPoint[1], triangleNewPoint[2], triangleStartPoint[0], triangleStartPoint[1], triangleStartPoint[2]);
+      } else
+      if (pointinTriangle(triangleNewPoint[3], triangleNewPoint[4], triangleNewPoint[5], uv)) {
+        uv = mappingPoint(uv, triangleNewPoint[3], triangleNewPoint[4], triangleNewPoint[5], triangleStartPoint[3], triangleStartPoint[4], triangleStartPoint[5]);
+      } else 
+      if (pointinTriangle(triangleNewPoint[6], triangleNewPoint[7], triangleNewPoint[8], uv)) {
+        uv = mappingPoint(uv, triangleNewPoint[6], triangleNewPoint[7], triangleNewPoint[8], triangleStartPoint[6], triangleStartPoint[7], triangleStartPoint[8]);
+      } else 
+      if (pointinTriangle(triangleNewPoint[9], triangleNewPoint[10], triangleNewPoint[11], uv)) {
+        uv = mappingPoint(uv, triangleNewPoint[9], triangleNewPoint[10], triangleNewPoint[11], triangleStartPoint[9], triangleStartPoint[10], triangleStartPoint[11]);
+      } else 
+      if (pointinTriangle(triangleNewPoint[12], triangleNewPoint[13], triangleNewPoint[14], uv)) {
+        uv = mappingPoint(uv, triangleNewPoint[12], triangleNewPoint[13], triangleNewPoint[14], triangleStartPoint[12], triangleStartPoint[13], triangleStartPoint[14]);
+      } else 
+      if (pointinTriangle(triangleNewPoint[15], triangleNewPoint[16], triangleNewPoint[17], uv)) {
+        uv = mappingPoint(uv, triangleNewPoint[15], triangleNewPoint[16], triangleNewPoint[17], triangleStartPoint[15], triangleStartPoint[16], triangleStartPoint[17]);
+      } else 
+      if (pointinTriangle(triangleNewPoint[18], triangleNewPoint[19], triangleNewPoint[20], uv)) {
+        uv = mappingPoint(uv, triangleNewPoint[18], triangleNewPoint[19], triangleNewPoint[20], triangleStartPoint[18], triangleStartPoint[19], triangleStartPoint[20]);
+      } else 
+      if (pointinTriangle(triangleNewPoint[21], triangleNewPoint[22], triangleNewPoint[23], uv)) {
+        uv = mappingPoint(uv, triangleNewPoint[21], triangleNewPoint[22], triangleNewPoint[23], triangleStartPoint[21], triangleStartPoint[22], triangleStartPoint[23]);
+      } else 
+      if (pointinTriangle(triangleNewPoint[24], triangleNewPoint[25], triangleNewPoint[26], uv)) {
+        uv = mappingPoint(uv, triangleNewPoint[24], triangleNewPoint[25], triangleNewPoint[26], triangleStartPoint[24], triangleStartPoint[25], triangleStartPoint[26]);
+      } else 
+      if (pointinTriangle(triangleNewPoint[27], triangleNewPoint[28], triangleNewPoint[29], uv)) {
+        uv = mappingPoint(uv, triangleNewPoint[27], triangleNewPoint[28], triangleNewPoint[29], triangleStartPoint[27], triangleStartPoint[28], triangleStartPoint[29]);
+      } else 
+      if (pointinTriangle(triangleNewPoint[30], triangleNewPoint[31], triangleNewPoint[32], uv)) {
+        uv = mappingPoint(uv, triangleNewPoint[30], triangleNewPoint[31], triangleNewPoint[32], triangleStartPoint[30], triangleStartPoint[31], triangleStartPoint[32]);
+      } else 
+      if (pointinTriangle(triangleNewPoint[33], triangleNewPoint[34], triangleNewPoint[35], uv)) {
+        uv = mappingPoint(uv, triangleNewPoint[33], triangleNewPoint[34], triangleNewPoint[35], triangleStartPoint[33], triangleStartPoint[34], triangleStartPoint[35]);
+      } //else 
+      // if (pointinTriangle(triangleNewPoint[36], triangleNewPoint[37], triangleNewPoint[38], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[36], triangleNewPoint[37], triangleNewPoint[38], triangleStartPoint[36], triangleStartPoint[37], triangleStartPoint[38]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[39], triangleNewPoint[40], triangleNewPoint[41], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[39], triangleNewPoint[40], triangleNewPoint[41], triangleStartPoint[39], triangleStartPoint[40], triangleStartPoint[41]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[42], triangleNewPoint[43], triangleNewPoint[44], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[42], triangleNewPoint[43], triangleNewPoint[44], triangleStartPoint[42], triangleStartPoint[43], triangleStartPoint[44]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[45], triangleNewPoint[46], triangleNewPoint[47], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[45], triangleNewPoint[46], triangleNewPoint[47], triangleStartPoint[45], triangleStartPoint[46], triangleStartPoint[47]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[48], triangleNewPoint[49], triangleNewPoint[50], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[48], triangleNewPoint[49], triangleNewPoint[50], triangleStartPoint[48], triangleStartPoint[49], triangleStartPoint[50]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[51], triangleNewPoint[52], triangleNewPoint[53], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[51], triangleNewPoint[52], triangleNewPoint[53], triangleStartPoint[51], triangleStartPoint[52], triangleStartPoint[53]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[54], triangleNewPoint[55], triangleNewPoint[56], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[54], triangleNewPoint[55], triangleNewPoint[56], triangleStartPoint[54], triangleStartPoint[55], triangleStartPoint[56]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[57], triangleNewPoint[58], triangleNewPoint[59], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[57], triangleNewPoint[58], triangleNewPoint[59], triangleStartPoint[57], triangleStartPoint[58], triangleStartPoint[59]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[60], triangleNewPoint[61], triangleNewPoint[62], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[60], triangleNewPoint[61], triangleNewPoint[62], triangleStartPoint[60], triangleStartPoint[61], triangleStartPoint[62]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[63], triangleNewPoint[64], triangleNewPoint[65], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[63], triangleNewPoint[64], triangleNewPoint[65], triangleStartPoint[63], triangleStartPoint[64], triangleStartPoint[65]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[66], triangleNewPoint[67], triangleNewPoint[68], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[66], triangleNewPoint[67], triangleNewPoint[68], triangleStartPoint[66], triangleStartPoint[67], triangleStartPoint[68]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[69], triangleNewPoint[70], triangleNewPoint[71], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[69], triangleNewPoint[70], triangleNewPoint[71], triangleStartPoint[69], triangleStartPoint[70], triangleStartPoint[71]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[72], triangleNewPoint[73], triangleNewPoint[74], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[72], triangleNewPoint[73], triangleNewPoint[74], triangleStartPoint[72], triangleStartPoint[73], triangleStartPoint[74]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[75], triangleNewPoint[76], triangleNewPoint[77], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[75], triangleNewPoint[76], triangleNewPoint[77], triangleStartPoint[75], triangleStartPoint[76], triangleStartPoint[77]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[78], triangleNewPoint[79], triangleNewPoint[80], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[78], triangleNewPoint[79], triangleNewPoint[80], triangleStartPoint[78], triangleStartPoint[79], triangleStartPoint[80]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[81], triangleNewPoint[82], triangleNewPoint[83], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[81], triangleNewPoint[82], triangleNewPoint[83], triangleStartPoint[81], triangleStartPoint[82], triangleStartPoint[83]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[84], triangleNewPoint[85], triangleNewPoint[86], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[84], triangleNewPoint[85], triangleNewPoint[86], triangleStartPoint[84], triangleStartPoint[85], triangleStartPoint[86]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[87], triangleNewPoint[88], triangleNewPoint[89], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[87], triangleNewPoint[88], triangleNewPoint[89], triangleStartPoint[87], triangleStartPoint[88], triangleStartPoint[89]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[90], triangleNewPoint[91], triangleNewPoint[92], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[90], triangleNewPoint[91], triangleNewPoint[92], triangleStartPoint[90], triangleStartPoint[91], triangleStartPoint[92]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[93], triangleNewPoint[94], triangleNewPoint[95], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[93], triangleNewPoint[94], triangleNewPoint[95], triangleStartPoint[93], triangleStartPoint[94], triangleStartPoint[95]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[96], triangleNewPoint[97], triangleNewPoint[98], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[96], triangleNewPoint[97], triangleNewPoint[98], triangleStartPoint[96], triangleStartPoint[97], triangleStartPoint[98]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[99], triangleNewPoint[100], triangleNewPoint[101], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[99], triangleNewPoint[100], triangleNewPoint[101], triangleStartPoint[99], triangleStartPoint[100], triangleStartPoint[101]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[102], triangleNewPoint[103], triangleNewPoint[104], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[102], triangleNewPoint[103], triangleNewPoint[104], triangleStartPoint[102], triangleStartPoint[103], triangleStartPoint[104]);
+      // } else 
+      // if (pointinTriangle(triangleNewPoint[105], triangleNewPoint[106], triangleNewPoint[107], uv)) {
+      //   uv = mappingPoint(uv, triangleNewPoint[105], triangleNewPoint[106], triangleNewPoint[107], triangleStartPoint[105], triangleStartPoint[106], triangleStartPoint[107]);
+      // }
+       else {
+        o.a = 0.0;
+      }
+      
+      if (o.a != 0.0) {
+        o *= CCSampleWithAlphaSeparated(cc_spriteTexture, uv);
+        // o.xyz = vec3(1.0, 0.0, 1.0);
+      }
+      #if IS_GRAY
+        float gray  = 0.2126 * o.r + 0.7152 * o.g + 0.0722 * o.b;
+        o.r = o.g = o.b = gray;
+      #endif
+    #endif
+
+      // vec2 uv = uv0.xy;
+
+      // o.xy = uv;
+      // o.xyz = vec3((uv.xy - triangleStartPoint[3].xy).x, (uv.xy - triangleStartPoint[3].xy).y , 0);
+
+    o *= color;
+    ALPHA_TEST(o);
+    return o;
+  }
+}%

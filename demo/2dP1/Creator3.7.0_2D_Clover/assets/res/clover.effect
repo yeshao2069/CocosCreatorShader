@@ -1,0 +1,104 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+// References: http://tokyodemofest.jp/2014/7lines/index.html
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+
+        ## 自定义参数   分辨率
+        resolution: { value: [960, 640] }
+}%
+
+CCProgram sprite-vs %{
+  precision mediump float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 color;
+  out vec2 uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(uv0);
+    #endif
+    color = a_color;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  #include <builtin/uniforms/cc-global>
+
+  in vec4 color;
+  in vec2 uv0;
+
+  uniform MXD {
+    vec2 resolution;
+  };
+
+  vec4 frag () {
+    vec4 o = vec4(0, 0, 0, 1);
+    vec2 uv = uv0;
+    vec2 rs = resolution.xy;
+    float time = cc_time.x;
+    vec2 q = 0.6 * (2.0 * uv * rs - rs) / min(resolution.y, resolution.x);
+
+    float a = atan(q.x, q.y);
+    float r = length(q);
+    float s = 0.50001 + 0.5 * sin(3.0 * a + time);
+    float g = sin(1.57 + 3.0 * a + time);
+    float d = 0.15 + 0.3 * sqrt(s) + 0.15 * g * g;
+    float h = clamp(r/d, 0.0, 1.0);
+    float f = 1.0 - smoothstep(0.95, 1.0, h);
+    
+    h *= 1.0 - 0.5 * (1.0 - h) * smoothstep(0.95 + 0.05 * h, 1.0, sin(3.0 * a + time));
+	
+	  vec3 bcol = vec3(0.9 + 0.1 * q.y, 1.0, 0.9 - 0.1 * q.y);
+	  bcol *= 1.0 - 0.5 * r;
+    vec3 col = mix(bcol, 1.2 * vec3(0.65 * h, 0.25 + 0.5 * h, 0.0), f);
+    
+    o = vec4(col, 1.0);
+    return o;
+  }
+}%

@@ -1,0 +1,130 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+        hightlightColor: { value: [1,1,1,1], editor: { type: color} }
+        textureSize: { value: [128,128] }
+        radius: { value: 0.0 }
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 color;
+  out vec2 uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(uv0);
+    #endif
+    color = a_color;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+
+  #pragma define SAMPLE 8
+  #pragma define PI 3.14159265359
+
+  in vec4 color;
+
+  uniform MXD {
+    vec4 hightlightColor;
+    vec2 textureSize;
+    float radius;
+  };
+
+  vec4 getColorFromTexture(sampler2D tex, vec2 uv){
+      vec4 color = vec4(1,1,1,1);
+      color = texture(tex, uv);
+      return color;
+  }
+
+  #if USE_TEXTURE
+    in vec2 uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  vec4 frag () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+      o *= CCSampleWithAlphaSeparated(cc_spriteTexture, uv0);
+      #if IS_GRAY
+        float gray  = 0.2126 * o.r + 0.7152 * o.g + 0.0722 * o.b;
+        o.r = o.g = o.b = gray;
+      #endif
+    #endif
+
+    float unitWidth = 1.0 / textureSize.x;  //单个像素的宽占uv.x的百分比
+    float unitHeight = 1.0 / textureSize.y; //单个像素的高占uv.y的百分比
+    float width = radius * unitWidth;   //radius为边缘高光的半径
+    float height = radius * unitHeight;
+
+    float angle = 0.0;  //角度
+    float maxAlpha = 0.0; //透明度，经过下面的循环后，如果透明度为0则说明该像素周围没有颜色，即它不是图像的边缘；反之则是图像的边缘
+    for (int i = 0; i < SAMPLE; i++){
+        angle += 1.0 / float(SAMPLE) * 2.0 * PI;  //角度每个循环增加一次，循环结束时角度为2PI，整好一个圆的角度，圆的精度由SAMPLE决定，SAMPLE越高圆越精细，但运算量也会增加
+        vec2 testPoint_uv = vec2(width * cos(angle), height * sin(angle)); //该点的圆上该角度的相对UV坐标
+        testPoint_uv = clamp(uv0 + testPoint_uv, vec2(0,0),vec2(1,1)); //加上该点的UV坐标变为绝对UV坐标
+        float tempAlpha = getColorFromTexture(cc_spriteTexture, testPoint_uv).a; //用绝对UV坐标从texture读取颜色，看它的透明度
+        maxAlpha = max(maxAlpha, tempAlpha);//把透明度结果保存起来
+    }
+
+    vec4 finalColor = mix(vec4(0.0), hightlightColor, maxAlpha);//根据检测后的透明度决定该点最终的颜色
+    o = getColorFromTexture(cc_spriteTexture, uv0);//读取该点本来的颜色
+
+    o *= color;
+    ALPHA_TEST(o);
+
+    o = mix(finalColor, o, o.a);//最后按透明度的占比给这俩颜色混合起来
+
+    return o;
+  }
+}%

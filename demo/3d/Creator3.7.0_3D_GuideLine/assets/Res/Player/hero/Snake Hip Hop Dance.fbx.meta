@@ -1,0 +1,82 @@
+{
+  "ver": "2.3.2",
+  "importer": "fbx",
+  "imported": true,
+  "uuid": "1b7087b4-d7ac-4748-bcf6-8fb986c2dd54",
+  "files": [
+    "__original-animation-0.cconb"
+  ],
+  "subMetas": {
+    "c1b8f": {
+      "importer": "gltf-animation",
+      "uuid": "1b7087b4-d7ac-4748-bcf6-8fb986c2dd54@c1b8f",
+      "displayName": "",
+      "id": "c1b8f",
+      "name": "dance.animation",
+      "userData": {
+        "gltfIndex": 0,
+        "wrapMode": 2,
+        "sample": 30,
+        "span": {
+          "from": 0,
+          "to": 15.266666412353516
+        },
+        "events": []
+      },
+      "ver": "1.0.16",
+      "imported": true,
+      "files": [
+        ".cconb"
+      ],
+      "subMetas": {}
+    },
+    "d81f1": {
+      "importer": "gltf-scene",
+      "uuid": "1b7087b4-d7ac-4748-bcf6-8fb986c2dd54@d81f1",
+      "displayName": "",
+      "id": "d81f1",
+      "name": "Snake Hip Hop Dance.prefab",
+      "userData": {
+        "gltfIndex": 0
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "imageMetas": [],
+    "legacyFbxImporter": false,
+    "animationImportSettings": [
+      {
+        "name": "mixamo.com",
+        "duration": 15.266666412353516,
+        "fps": 30,
+        "splits": [
+          {
+            "name": "dance",
+            "from": 0,
+            "to": 15.266666412353516,
+            "wrapMode": 2
+          }
+        ]
+      }
+    ],
+    "redirect": "1b7087b4-d7ac-4748-bcf6-8fb986c2dd54@d81f1",
+    "assetFinder": {
+      "meshes": [],
+      "skeletons": [],
+      "textures": [],
+      "materials": [],
+      "scenes": [
+        "1b7087b4-d7ac-4748-bcf6-8fb986c2dd54@d81f1"
+      ]
+    },
+    "fbx": {
+      "smartMaterialEnabled": false
+    }
+  }
+}

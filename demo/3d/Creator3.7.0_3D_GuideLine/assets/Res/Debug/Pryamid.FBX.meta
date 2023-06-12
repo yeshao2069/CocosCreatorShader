@@ -1,0 +1,61 @@
+{
+  "ver": "2.3.2",
+  "importer": "fbx",
+  "imported": true,
+  "uuid": "ae0a90f2-fd4e-4e2e-89c0-6b6abd2e4bd2",
+  "files": [],
+  "subMetas": {
+    "35678": {
+      "importer": "gltf-scene",
+      "uuid": "ae0a90f2-fd4e-4e2e-89c0-6b6abd2e4bd2@35678",
+      "displayName": "",
+      "id": "35678",
+      "name": "Pryamid.prefab",
+      "userData": {
+        "gltfIndex": 0
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "709a9": {
+      "importer": "gltf-mesh",
+      "uuid": "ae0a90f2-fd4e-4e2e-89c0-6b6abd2e4bd2@709a9",
+      "displayName": "",
+      "id": "709a9",
+      "name": "Pyramid001.mesh",
+      "userData": {
+        "gltfIndex": 0
+      },
+      "ver": "1.1.0",
+      "imported": true,
+      "files": [
+        ".bin",
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "imageMetas": [],
+    "legacyFbxImporter": false,
+    "redirect": "ae0a90f2-fd4e-4e2e-89c0-6b6abd2e4bd2@35678",
+    "assetFinder": {
+      "meshes": [
+        "ae0a90f2-fd4e-4e2e-89c0-6b6abd2e4bd2@709a9"
+      ],
+      "skeletons": [],
+      "textures": [],
+      "materials": [],
+      "scenes": [
+        "ae0a90f2-fd4e-4e2e-89c0-6b6abd2e4bd2@35678"
+      ]
+    },
+    "fbx": {
+      "smartMaterialEnabled": false
+    }
+  }
+}

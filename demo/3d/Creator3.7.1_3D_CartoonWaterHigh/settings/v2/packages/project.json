@@ -1,0 +1,18 @@
+{
+  "layer": [
+    {
+      "name": "DEPTH",
+      "value": 1
+    },
+    {
+      "name": "NORMAL",
+      "value": 2
+    }
+  ],
+  "__version__": "1.0.4",
+  "fbx": {
+    "legacyFbxImporter": {
+      "visible": true
+    }
+  }
+}

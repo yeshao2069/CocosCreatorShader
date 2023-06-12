@@ -1,0 +1,152 @@
+ v// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+        mainTex: { value: white }
+        noiseTex: { value: white }
+        color1 : { value : [0.88, 0.29, 0.16, 1.], editor: { type: "color" } }
+        color2 : { value : [0.96, 0.92, 0.45, 1.], editor: { type: "color" } }
+        speed1 : { value : [1.0,1.0,1.0,1.0,] }
+        speed2 : { value : [1.0,1.0,1.0,1.0,] }
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 color;
+  out vec2 uv0;
+  out vec4 v_wp;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+    v_wp = pos;
+
+    uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(uv0);
+    #endif
+    color = a_color;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  #include <builtin/uniforms/cc-global>
+
+  in vec4 color;
+  in vec4 v_wp;
+
+  uniform sampler2D mainTex;
+  uniform sampler2D noiseTex;
+
+  uniform MXD {
+    vec4 color1;
+    vec4 color2;
+    vec4 speed1;
+    vec4 speed2;
+  };
+
+  #if USE_TEXTURE
+    in vec2 uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  // offmul 取样的随机数的缩放倍数
+  // move 火焰抖动幅度 cc_time.x * speed 时间乘速度等于距离
+  // mc 火焰颜色
+  vec4 fragFire (vec2 uv, vec4 mc, vec2 move, vec2 offmul) {
+    vec4 c = vec4(0.);
+
+    // *6 不然噪声图纹理太粗 不像火焰的细纹理
+    vec4 tex1 = texture(noiseTex, uv * 6. + move);
+    // 用噪声图取样随机值 给纹理偏移
+    vec2 off = tex1.xy ;
+    // off的取值0-1 减去0.5 让值范围变到 -0.5-0.5 效果比之前好看点
+    off -= .5;
+
+    vec4 tex3 = texture(mainTex, uv + off * offmul);
+    
+    c.xyz = mc.xyz;
+    c.a = tex3.a;
+
+    return c;
+  }
+
+  vec4 frag () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+      o *= CCSampleWithAlphaSeparated(cc_spriteTexture, uv0);
+      #if IS_GRAY
+        float gray  = 0.2126 * o.r + 0.7152 * o.g + 0.0722 * o.b;
+        o.r = o.g = o.b = gray;
+      #endif
+    #endif
+
+    o *= color;
+
+    vec2 uvt;
+    vec4 c1;
+    float time = cc_time.x;
+    uvt = uv0;
+
+    // *.97 + 0.15 给图片做缩放同时矫正位置到中心
+    vec4 f1 = fragFire(uvt * .97 + .015, color1, time * speed1.xy, vec2(0., 0.03));
+    vec4 f2 = fragFire(uvt * .99 + .005, color2, time * speed2.xy, vec2(0., 0.015));
+
+    c1 = mix(f1, f2, f2.a);
+    float a = f1.a + f2.a;
+
+    vec4 colorfire = vec4(c1.xyz, a);
+
+    // 直接对原图取样 也显示来 省的在创建个图盖上去了
+    vec4 tex = texture(mainTex, uv0);
+
+    o = mix(colorfire, tex, tex.a);
+
+    ALPHA_TEST(o);
+    return o;
+  }
+}%

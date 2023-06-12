@@ -1,0 +1,126 @@
+{
+  "ver": "2.3.2",
+  "importer": "fbx",
+  "imported": true,
+  "uuid": "ac28db7c-be8c-4a17-8b32-d3f417221207",
+  "files": [],
+  "subMetas": {
+    "c6e33": {
+      "importer": "gltf-mesh",
+      "uuid": "ac28db7c-be8c-4a17-8b32-d3f417221207@c6e33",
+      "displayName": "",
+      "id": "c6e33",
+      "name": "Cube.002.mesh",
+      "userData": {
+        "gltfIndex": 0
+      },
+      "ver": "1.1.0",
+      "imported": true,
+      "files": [
+        ".bin",
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "933e8": {
+      "importer": "gltf-embeded-image",
+      "uuid": "ac28db7c-be8c-4a17-8b32-d3f417221207@933e8",
+      "displayName": "",
+      "id": "933e8",
+      "name": "Texture.image",
+      "userData": {
+        "gltfIndex": 0
+      },
+      "ver": "1.0.3",
+      "imported": true,
+      "files": [
+        ".json",
+        ".png"
+      ],
+      "subMetas": {}
+    },
+    "eb3be": {
+      "importer": "texture",
+      "uuid": "ac28db7c-be8c-4a17-8b32-d3f417221207@eb3be",
+      "displayName": "",
+      "id": "eb3be",
+      "name": "Texture.texture",
+      "userData": {
+        "wrapModeS": "repeat",
+        "wrapModeT": "repeat",
+        "minfilter": "linear",
+        "magfilter": "linear",
+        "mipfilter": "none",
+        "anisotropy": 0,
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "ac28db7c-be8c-4a17-8b32-d3f417221207@933e8"
+      },
+      "ver": "1.0.22",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "1043e": {
+      "importer": "gltf-material",
+      "uuid": "ac28db7c-be8c-4a17-8b32-d3f417221207@1043e",
+      "displayName": "",
+      "id": "1043e",
+      "name": "Material.002.material",
+      "userData": {
+        "gltfIndex": 0
+      },
+      "ver": "1.0.14",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "ccb98": {
+      "importer": "gltf-scene",
+      "uuid": "ac28db7c-be8c-4a17-8b32-d3f417221207@ccb98",
+      "displayName": "",
+      "id": "ccb98",
+      "name": "free_sword.prefab",
+      "userData": {
+        "gltfIndex": 0
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "imageMetas": [
+      {
+        "name": "Texture",
+        "uri": "ac28db7c-be8c-4a17-8b32-d3f417221207@933e8"
+      }
+    ],
+    "legacyFbxImporter": false,
+    "redirect": "ac28db7c-be8c-4a17-8b32-d3f417221207@ccb98",
+    "assetFinder": {
+      "meshes": [
+        "ac28db7c-be8c-4a17-8b32-d3f417221207@c6e33"
+      ],
+      "skeletons": [],
+      "textures": [
+        "ac28db7c-be8c-4a17-8b32-d3f417221207@eb3be"
+      ],
+      "materials": [
+        "ac28db7c-be8c-4a17-8b32-d3f417221207@1043e"
+      ],
+      "scenes": [
+        "ac28db7c-be8c-4a17-8b32-d3f417221207@ccb98"
+      ]
+    },
+    "fbx": {
+      "smartMaterialEnabled": false
+    }
+  }
+}

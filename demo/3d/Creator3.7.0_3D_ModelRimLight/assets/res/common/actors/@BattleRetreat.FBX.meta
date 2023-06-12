@@ -1,0 +1,82 @@
+{
+  "ver": "2.3.2",
+  "importer": "fbx",
+  "imported": true,
+  "uuid": "2f981ece-097c-4c0c-855f-8387ba48a8f3",
+  "files": [
+    "__original-animation-0.cconb"
+  ],
+  "subMetas": {
+    "1a599": {
+      "importer": "gltf-animation",
+      "uuid": "2f981ece-097c-4c0c-855f-8387ba48a8f3@1a599",
+      "displayName": "",
+      "id": "1a599",
+      "name": "BattleRetreat.animation",
+      "ver": "1.0.16",
+      "imported": true,
+      "files": [
+        ".cconb"
+      ],
+      "subMetas": {},
+      "userData": {
+        "gltfIndex": 0,
+        "wrapMode": 2,
+        "sample": 30,
+        "span": {
+          "from": 0,
+          "to": 1.0416666269302368
+        },
+        "events": []
+      }
+    },
+    "578f6": {
+      "importer": "gltf-scene",
+      "uuid": "2f981ece-097c-4c0c-855f-8387ba48a8f3@578f6",
+      "displayName": "",
+      "id": "578f6",
+      "name": "@BattleRetreat.prefab",
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {},
+      "userData": {
+        "gltfIndex": 0
+      }
+    }
+  },
+  "userData": {
+    "imageMetas": [],
+    "animationImportSettings": [
+      {
+        "name": "Take 001",
+        "duration": 1.0416666269302368,
+        "fps": 30,
+        "splits": [
+          {
+            "name": "BattleRetreat",
+            "from": 0,
+            "to": 1.0416666269302368,
+            "wrapMode": 2
+          }
+        ]
+      }
+    ],
+    "redirect": "2f981ece-097c-4c0c-855f-8387ba48a8f3@578f6",
+    "assetFinder": {
+      "meshes": [],
+      "skeletons": [],
+      "textures": [],
+      "materials": [],
+      "scenes": [
+        "2f981ece-097c-4c0c-855f-8387ba48a8f3@578f6"
+      ]
+    },
+    "legacyFbxImporter": true,
+    "fbx": {
+      "smartMaterialEnabled": false
+    }
+  }
+}

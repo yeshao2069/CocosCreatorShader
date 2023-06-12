@@ -1,0 +1,90 @@
+{
+  "ver": "1.0.25",
+  "importer": "image",
+  "imported": true,
+  "uuid": "b288db05-884b-4abd-96c7-35f22638ad84",
+  "files": [
+    ".json",
+    ".png"
+  ],
+  "subMetas": {
+    "6c48a": {
+      "importer": "texture",
+      "uuid": "b288db05-884b-4abd-96c7-35f22638ad84@6c48a",
+      "displayName": "Lightmap-0_comp_light",
+      "id": "6c48a",
+      "name": "texture",
+      "userData": {
+        "wrapModeS": "repeat",
+        "wrapModeT": "repeat",
+        "minfilter": "nearest",
+        "magfilter": "nearest",
+        "mipfilter": "none",
+        "anisotropy": 0,
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "b288db05-884b-4abd-96c7-35f22638ad84",
+        "visible": true
+      },
+      "ver": "1.0.22",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "2a309": {
+      "importer": "alpha-image",
+      "uuid": "b288db05-884b-4abd-96c7-35f22638ad84@2a309",
+      "displayName": "alpha",
+      "id": "2a309",
+      "name": "alpha",
+      "userData": {
+        "fixAlphaTransparencyArtifacts": false,
+        "isRGBE": false,
+        "hasAlpha": true,
+        "redirect": "b288db05-884b-4abd-96c7-35f22638ad84@2a309@6c48a",
+        "type": "texture"
+      },
+      "ver": "1.0.0",
+      "imported": true,
+      "files": [
+        ".json",
+        ".png"
+      ],
+      "subMetas": {
+        "6c48a": {
+          "importer": "texture",
+          "uuid": "b288db05-884b-4abd-96c7-35f22638ad84@2a309@6c48a",
+          "displayName": "alpha",
+          "id": "6c48a",
+          "name": "texture",
+          "userData": {
+            "wrapModeS": "repeat",
+            "wrapModeT": "repeat",
+            "minfilter": "nearest",
+            "magfilter": "nearest",
+            "mipfilter": "none",
+            "anisotropy": 0,
+            "isUuid": true,
+            "imageUuidOrDatabaseUri": "b288db05-884b-4abd-96c7-35f22638ad84@2a309",
+            "visible": true
+          },
+          "ver": "1.0.22",
+          "imported": true,
+          "files": [
+            ".json"
+          ],
+          "subMetas": {}
+        }
+      }
+    }
+  },
+  "userData": {
+    "fixAlphaTransparencyArtifacts": false,
+    "isRGBE": true,
+    "alpha": "project://temp/asset-db/assets/b2/b288db05-884b-4abd-96c7-35f22638ad84/b288db05-884b-4abd-96c7-35f22638ad84_alpha.png",
+    "hasAlpha": true,
+    "type": "texture",
+    "redirect": "b288db05-884b-4abd-96c7-35f22638ad84@6c48a"
+  }
+}

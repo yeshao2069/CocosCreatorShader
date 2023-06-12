@@ -1,0 +1,159 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+//
+// Star Nest by Pablo Roman Andrioli
+
+// https://www.shadertoy.com/view/XlfGRj
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+
+        resolution: { value: [960, 640] }
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 color;
+  out vec2 uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(uv0);
+    #endif
+    color = a_color;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+  #include <builtin/uniforms/cc-global>
+
+  in vec4 color;
+
+  uniform MXD {
+    vec2 resolution;
+  };
+
+  #pragma define iterations 17
+  #pragma define formuparam 0.53
+
+  #pragma define volsteps 20
+  #pragma define stepsize 0.1
+
+  #pragma define zoom   0.800
+  #pragma define tile   0.850
+  #pragma define speed  0.010 
+
+  #pragma define brightness 0.0015
+  #pragma define darkmatter 0.300
+  #pragma define distfading 0.730
+  #pragma define saturation 0.850
+
+  #if USE_TEXTURE
+    in vec2 uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  vec4 frag () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+      o *= CCSampleWithAlphaSeparated(cc_spriteTexture, uv0);
+    #endif
+
+    vec2 r = resolution;
+    vec2 fragCoord = uv0 * r;
+    vec2 iMouse = vec2(0.5);
+    
+    //get coords and direction
+	  vec2 uv = fragCoord.xy / r.xy - .5;
+	  uv.y *= r.y / r.x;
+	  vec3 dir = vec3(uv * zoom,1.);
+	  float time = cc_time.x * speed + .25;
+
+	  //mouse rotation
+	  float a1 = .5 + iMouse.x / r.x * 2.;
+	  float a2 = .8 + iMouse.y / r.y * 2.;
+	  mat2 rot1 = mat2(cos(a1), sin(a1), -sin(a1), cos(a1));
+	  mat2 rot2 = mat2(cos(a2), sin(a2), -sin(a2), cos(a2));
+	  dir.xz *= rot1;
+	  dir.xy *= rot2;
+	  vec3 from = vec3(1., .5, 0.5);
+	  from += vec3(time * 2.,time, -2.);
+	  from.xz *= rot1;
+	  from.xy *= rot2;
+	
+    //volumetric rendering
+    float s = 0.1, fade = 1.;
+    vec3 v = vec3(0.);
+    for (int r = 0; r < volsteps; r++) {
+      vec3 p = from + s * dir * .5;
+      p = abs(vec3(tile) - mod(p, vec3(tile * 2.))); // tiling fold
+      float pa, a = pa =0.;
+      for (int i = 0; i < iterations; i++) { 
+        p = abs(p) / dot(p, p) - formuparam; // the magic formula
+        a += abs(length(p) - pa); // absolute sum of average change
+        pa = length(p);
+      }
+      float dm = max(0., darkmatter - a * a * .001); //dark matter
+      a *= a * a; // add contrast
+      if (r > 6) fade *= 1. - dm; // dark matter, don't render near
+      //v+=vec3(dm,dm*.5,0.);
+      v += fade;
+      v += vec3(s, s*s, s*s*s*s) * a * brightness * fade; // coloring based on distance
+      fade *= distfading; // distance fading
+      s += stepsize;
+    }
+
+	  v = mix(vec3(length(v)), v, saturation); //color adjust
+    
+	  o = vec4(v*.01,1.);	
+    return o;
+  }
+}%

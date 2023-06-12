@@ -1,0 +1,124 @@
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        alphaThreshold: { value: 0.5 }
+        # 自定义参数
+        textureNoise: { value: white, editor: { tooltip: "噪声贴图"}}
+        noiseThreshold: {
+          value: 0.0, editor: { 
+            tooltip: "噪声阈值", slide: true, range: [0, 1, 0.05]
+          }
+        }
+        colorWidth: {
+          value: 0.1, editor: { 
+            tooltip: "消融颜色宽度", slide: true, range: [0, 0.3, 0.02]
+          }
+        }
+        burnColorInner: {
+          value: [1.0, 1.0, 0.0, 1.0], editor: {
+            tooltip: "消融颜色边缘颜色（内）", type: 'color' 
+          }
+        }
+        burnColorOut: {
+          value: [1.0, 0.0, 0.0, 1.0], editor: {
+            tooltip: "消融颜色边缘颜色（外）", type: 'color'
+          }
+        }
+}%
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif
+
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 v_color;
+  out vec2 v_uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    v_color = a_color;
+    v_uv0 = a_texCoord;
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+  #include <builtin/internal/alpha-test>
+
+  in vec4 v_color;
+
+  #if USE_TEXTURE
+    in vec2 v_uv0;
+    #pragma builtin(local)
+    layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+  #endif
+
+  uniform sampler2D textureNoise;
+  uniform MXD {
+    vec4 burnColorInner;
+    vec4 burnColorOut;
+    float noiseThreshold;
+    float colorWidth;
+  };
+
+  vec3 lerp(vec3 a, vec3 b, float t) {
+    return a + (b - a) * t;
+  }
+
+  vec4 frag () {
+    vec4 noise = vec4(1, 1, 1, 1);
+
+    noise *= CCSampleWithAlphaSeparated(textureNoise, v_uv0 * 3.0);
+    if (noise.r < noiseThreshold) {
+      discard;
+    }
+
+    vec4 o = vec4(1, 1, 1, 1);
+    #if USE_TEXTURE
+      o *= CCSampleWithAlphaSeparated(cc_spriteTexture, v_uv0);
+    #endif
+    
+    float t = 1.0 - smoothstep(0.0, colorWidth, noise.r - noiseThreshold);
+    vec3 burnColor = lerp(burnColorInner.rgb, burnColorOut.rgb, t);
+    o.rgb = lerp(o.rgb, burnColor.rgb,  t * step(0.0001, noiseThreshold));
+
+    o *= v_color;
+    ALPHA_TEST(o);
+    return o;
+  }
+}%

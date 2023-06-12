@@ -1,0 +1,7 @@
+{
+  /* Base configuration. Do not edit this field. */
+  "extends": "./temp/tsconfig.cocos.json",
+  "strict": false,
+
+  /* Add your custom configuration here. */
+}
